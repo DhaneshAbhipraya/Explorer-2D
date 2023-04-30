@@ -7,6 +7,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 public class Main extends JPanel implements KeyListener {
@@ -17,8 +21,26 @@ public class Main extends JPanel implements KeyListener {
     private ArrayList<Entity> entities = new ArrayList<>();
     private double moveX;
     private double moveY;
+    private final Path runDir;
 
-    public Main() {
+    public Main(String runDir) {
+        System.out.println("Running Directory: "+runDir);
+        File file = Path.of(runDir, "runDirRoot").toFile();
+        Path path = Path.of(runDir);
+        this.runDir = path;
+        if (!file.exists()) {
+            try {
+                Files.createDirectories(path);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("Running Directory File does not exist!");
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
         setPreferredSize(new Dimension(width, height));
         addKeyListener(this);
         setFocusable(true);
@@ -30,7 +52,7 @@ public class Main extends JPanel implements KeyListener {
 
     public static void main(String[] args) throws InterruptedException {
         JFrame frame = new JFrame("Explorer 2D");
-        Main game = new Main();
+        Main game = new Main(args[0]);
         frame.add(game);
         frame.pack();
         frame.setVisible(true);
