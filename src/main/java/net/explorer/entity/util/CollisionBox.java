@@ -1,4 +1,6 @@
-package net.explorer.entity;
+package net.explorer.entity.util;
+
+import net.explorer.entity.Entity;
 
 public class CollisionBox {
     private double x1;
