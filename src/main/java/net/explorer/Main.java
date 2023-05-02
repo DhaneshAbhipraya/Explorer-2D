@@ -2,6 +2,8 @@ package net.explorer;
 
 import net.explorer.entity.Box;
 import net.explorer.entity.Entity;
+import net.explorer.event.Events;
+import net.explorer.event.TickEvent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -51,6 +53,8 @@ public class Main extends JPanel implements KeyListener {
     }
 
     public static void main(String[] args) throws InterruptedException {
+        new Events();
+//        TickEventTest.main(args);
         JFrame frame = new JFrame("Explorer 2D");
         Main game = new Main(args[0]);
         frame.add(game);
@@ -64,10 +68,12 @@ public class Main extends JPanel implements KeyListener {
     }
 
     public void tick() {
-        for (int i = 0; i < this.entities.size(); i++) {
-            if (this.entities.get(i) == this.player) this.entities.get(i).applyForce(this.moveX, this.moveY);
-            this.entities.get(i).tick();
+        Events.getInstance().tickInitiator.startTick();
+        for (Entity entity : this.entities) {
+            if (entity == this.player) entity.applyForce(this.moveX, this.moveY);
+            entity.tick();
         }
+        Events.getInstance().tickInitiator.endTick();
     }
 
     public void paintComponent(Graphics g) {
