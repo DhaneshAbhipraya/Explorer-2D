@@ -1,5 +1,7 @@
 package net.explorer.entity;
 
+import net.explorer.entity.util.CollisionBox;
+
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
