@@ -30,6 +30,7 @@ public abstract class Entity {
         this.xAcc = 0;
         this.yAcc = 0;
         this.ai = new AI(this);
+        this.init();
     }
 
     public abstract void draw(Graphics2D g2d);

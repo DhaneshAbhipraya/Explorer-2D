@@ -1,9 +1,10 @@
 package net.explorer;
 
+import net.explorer.assets.AssetsManager;
 import net.explorer.entity.Box;
+import net.explorer.entity.Cat;
 import net.explorer.entity.Entity;
 import net.explorer.event.Events;
-import net.explorer.event.TickEvent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,7 +24,8 @@ public class Main extends JPanel implements KeyListener {
     private ArrayList<Entity> entities = new ArrayList<>();
     private double moveX;
     private double moveY;
-    private final Path runDir;
+    public final Path runDir;
+    public final Path assetsDir;
 
     public Main(String runDir) {
         System.out.println("Running Directory: "+runDir);
@@ -43,16 +45,28 @@ public class Main extends JPanel implements KeyListener {
                 throw new RuntimeException(e);
             }
         }
+
+        this.assetsDir = Path.of(this.runDir.toString(), "assets");
+        try {
+            Files.createDirectories(this.assetsDir);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println("Assets Directory: "+this.assetsDir);
+
+        AssetsManager.getInstance().setMain(this);
+
         setPreferredSize(new Dimension(width, height));
         addKeyListener(this);
         setFocusable(true);
-        player = new Box();
+        player = new Cat();
         entities.add(player);
         for (int i = 0; i < 100; i++)
             entities.add(new Box());
     }
 
     public static void main(String[] args) throws InterruptedException {
+        new AssetsManager();
         new Events();
 //        TickEventTest.main(args);
         JFrame frame = new JFrame("Explorer 2D");
@@ -85,6 +99,9 @@ public class Main extends JPanel implements KeyListener {
             this.entities.get(i).draw(g2d);
             this.entities.get(i).drawCollisionBox(g2d);
         }
+
+        this.player.draw(g2d);
+        this.player.drawCollisionBox(g2d);
         repaint();
     }
 
