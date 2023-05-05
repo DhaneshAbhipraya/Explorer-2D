@@ -112,8 +112,8 @@ public class Main extends JPanel implements KeyListener {
         System.out.println(this.player.canMove());
         if (this.player.canMove()) {
             // Set moveX and moveY accordingly
-            this.moveX += dx;
-            this.moveY += dy;
+            this.moveX = dx;
+            this.moveY = dy;
         }
     }
 
