@@ -16,4 +16,9 @@ public class Box extends Entity {
         Rectangle2D player = new Rectangle2D.Double(this.getX() - 25, this.getY() - 50, 50, 50);
         g2d.fill(player);
     }
+
+    @Override
+    public boolean canMove() {
+        return false;
+    }
 }

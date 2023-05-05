@@ -10,7 +10,10 @@ public class TickEvent {
     }
 
     public static class TickInitiator {
-        private final List<TickListener> listeners = new ArrayList<>();
+        private List<TickListener> listeners = new ArrayList<>();
+        public void setListeners(List<TickListener> listeners) {
+            this.listeners = listeners;
+        }
 
         public void addListener(TickListener toAdd) {
             listeners.add(toAdd);

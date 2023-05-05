@@ -23,7 +23,7 @@ public class AI {
     }
 
     public void tick() {
-        if (this.enabled)
+        if (this.enabled && this.entity.canMove())
             for (Task task :
                     this.taskQueue) {
                 task.tick(this.entity);

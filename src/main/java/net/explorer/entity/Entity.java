@@ -1,13 +1,15 @@
 package net.explorer.entity;
 
 import net.explorer.Main;
-import net.explorer.ai.AI;
 import net.explorer.entity.util.Axis;
 import net.explorer.entity.util.CollisionBox;
+import net.explorer.event.TickEvent;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public abstract class Entity {
@@ -18,9 +20,11 @@ public abstract class Entity {
     private double yVel;
     private double xAcc;
     private double yAcc;
-    protected AI ai;
+    public TickEvent.TickInitiator tickInitiator;
+    public List<TickEvent.TickListener> listeners = new ArrayList<>();
 
     public void init() { }
+    public void postInit() { }
 
     public Entity() {
         this.x = new Random().nextDouble(Main.width);
@@ -29,8 +33,9 @@ public abstract class Entity {
         this.yVel = 0;
         this.xAcc = 0;
         this.yAcc = 0;
-        this.ai = new AI(this);
+        this.tickInitiator = new TickEvent.TickInitiator();
         this.init();
+        this.postInit();
     }
 
     public abstract void draw(Graphics2D g2d);
@@ -44,7 +49,8 @@ public abstract class Entity {
     }
 
     public void tick() {
-        this.ai.tick();
+        this.tickInitiator.setListeners(this.listeners);
+        this.tickInitiator.startTick();
 //        this.yAcc += 9.807;
         this.xVel += this.xAcc;
         this.yVel += this.yAcc;
@@ -87,6 +93,7 @@ public abstract class Entity {
             this.y = 0 - this.collisionBox.getY1Relative();
             this.yVel = -0.8;
         }
+        this.tickInitiator.endTick();
     }
 
     public double getX() {
@@ -121,5 +128,9 @@ public abstract class Entity {
     public void move(double dx, double dy) {
         this.x += dx;
         this.y += dy;
+    }
+
+    public boolean canMove() {
+        return false;
     }
 }

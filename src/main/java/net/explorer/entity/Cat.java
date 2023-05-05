@@ -7,14 +7,14 @@ import net.explorer.entity.util.CollisionBox;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 
-public class Cat extends Entity {
+public class Cat extends LivingEntity {
 
     public Cat() {
         this.collisionBox = new CollisionBox(this,-50,-50,100,50);
     }
 
     @Override
-    public void init() {
+    public void postInit() {
         this.ai.setEnabled(true);
         this.ai.taskQueue.add(new RandomMove());
     }
