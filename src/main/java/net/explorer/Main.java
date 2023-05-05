@@ -83,9 +83,6 @@ public class Main extends JPanel implements KeyListener {
 
     public void tick() {
         Events.getInstance().tickInitiator.startTick();
-        System.out.print(this.moveX);
-        System.out.print(' ');
-        System.out.println(this.moveY);
         this.player.applyForce(this.moveX, this.moveY);
         for (Entity entity : this.entities) {
             entity.tick();
@@ -109,7 +106,6 @@ public class Main extends JPanel implements KeyListener {
     }
 
     public void movePlayer(double dx, double dy) {
-        System.out.println(this.player.canMove());
         if (this.player.canMove()) {
             // Set moveX and moveY accordingly
             this.moveX = dx;
