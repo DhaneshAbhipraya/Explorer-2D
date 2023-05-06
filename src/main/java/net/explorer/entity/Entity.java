@@ -6,11 +6,14 @@ import net.explorer.entity.util.Axis;
 import net.explorer.entity.util.CollisionBox;
 import net.explorer.event.TickEvent;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -172,6 +175,22 @@ public abstract class Entity {
     public void assetDraw(Graphics2D g2d) {
         if (this.assetImageFile == null) {
             this.assetImageFile = Path.of("/fallback.png").toFile();
+            System.out.println("Asset image does not exist!");
+            if (!Path.of(Main.getInstance().assetsDir+"\\"+this.assetImageFile.toString()).toFile().exists()) {
+                System.out.println("Fallback image does not exist!");
+                BufferedImage image = new BufferedImage(2,2,BufferedImage.TYPE_INT_RGB);
+
+                image.setRGB(1,0,Color.MAGENTA.getRGB());
+                image.setRGB(0,1,Color.MAGENTA.getRGB());
+                image.setRGB(0,0,Color.BLACK.getRGB());
+                image.setRGB(1,1,Color.BLACK.getRGB());
+
+                try {
+                    ImageIO.write(image, "png", Path.of(Main.getInstance().assetsDir+"\\"+this.assetImageFile.toString()).toFile());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         Image image = AssetsManager.getInstance().getImageFromFilePathString(assetImageFile.toString());
         AffineTransform tr = new AffineTransform();
