@@ -23,11 +23,9 @@ public class AI {
     }
 
     public void tick() {
-        if (this.enabled && this.entity.canMove())
-            for (Task task :
-                    this.taskQueue) {
-                task.tick(this.entity);
-            }
+        if (this.enabled && this.entity.canMove()) for (Task task : this.taskQueue) {
+            task.tick(this.entity);
+        }
     }
 
     public final List<Task> taskQueue = new ArrayList<>();

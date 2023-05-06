@@ -3,10 +3,10 @@ package net.explorer.entity.util;
 import net.explorer.entity.Entity;
 
 public class CollisionBox {
-    private double x1;
-    private double y1;
-    private double x2;
-    private double y2;
+    private final double x1;
+    private final double y1;
+    private final double x2;
+    private final double y2;
     private final Entity entity;
 
     public CollisionBox(Entity entity, double x1, double y1, double x2, double y2) {

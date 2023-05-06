@@ -8,7 +8,7 @@ import java.awt.*;
 public class Cat extends LivingEntity {
 
     public Cat() {
-        this.collisionBox = new CollisionBox(this,-50,-50,100,50);
+        this.collisionBox = new CollisionBox(this, -50, -50, 100, 50);
         this.useAssetDraw();
     }
 

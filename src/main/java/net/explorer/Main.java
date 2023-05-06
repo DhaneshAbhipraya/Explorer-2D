@@ -20,9 +20,9 @@ public class Main extends JPanel implements KeyListener {
     private static final long tps = 20;
     public static final int width = 800; // Width of the game screen
     public static final int height = 600; // Height of the game screen
-    private Entity player;
-//    private ArrayList<Entity> entities = new ArrayList<>();
-    private World world;
+    private final Entity player;
+    //    private ArrayList<Entity> entities = new ArrayList<>();
+    private final World world;
     private double moveX;
     private double moveY;
     public final Path runDir;
@@ -35,7 +35,7 @@ public class Main extends JPanel implements KeyListener {
 
     public Main(String runDir) {
         instance = this;
-        System.out.println("Running Directory: "+runDir);
+        System.out.println("Running Directory: " + runDir);
         File file = Path.of(runDir, "runDirRoot").toFile();
         Path path = Path.of(runDir);
         this.runDir = path;
@@ -59,7 +59,7 @@ public class Main extends JPanel implements KeyListener {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        System.out.println("Assets Directory: "+this.assetsDir);
+        System.out.println("Assets Directory: " + this.assetsDir);
 
         AssetsManager.getInstance().setMain(this);
 

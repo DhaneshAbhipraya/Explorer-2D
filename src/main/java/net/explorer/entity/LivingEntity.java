@@ -9,7 +9,8 @@ public abstract class LivingEntity extends Entity {
 
     private class tl1 implements TickEvent.TickListener {
 
-        private AI ai;
+        private final AI ai;
+
         public tl1(AI ai) {
             this.ai = ai;
         }

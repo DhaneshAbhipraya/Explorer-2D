@@ -150,19 +150,19 @@ public abstract class Entity {
 
         File assetImagePNG = Path.of(assetImagePathString + ".png").toFile();
         System.out.println("Searching " + assetImagePNG);
-        if (Path.of(Main.getInstance().assetsDir+"\\"+assetImagePNG.toString()).toFile().exists()) {
+        if (Path.of(Main.getInstance().assetsDir + "\\" + assetImagePNG).toFile().exists()) {
             System.out.println("Image path found " + assetImagePNG);
             this.assetImageFile = assetImagePNG;
         } else {
             File assetImageJPG = Path.of(assetImagePathString + ".jpg").toFile();
             System.out.println("Searching " + assetImageJPG);
-            if (Path.of(Main.getInstance().assetsDir+"\\"+assetImageJPG.toString()).toFile().exists()) {
+            if (Path.of(Main.getInstance().assetsDir + "\\" + assetImageJPG).toFile().exists()) {
                 System.out.println("Image path found " + assetImageJPG);
                 this.assetImageFile = assetImageJPG;
             } else {
                 File assetImageJPEG = Path.of(assetImagePathString + ".jpeg").toFile();
                 System.out.println("Searching " + assetImageJPEG);
-                if (Path.of(Main.getInstance().assetsDir+"\\"+assetImageJPEG.toString()).toFile().exists()) {
+                if (Path.of(Main.getInstance().assetsDir + "\\" + assetImageJPEG).toFile().exists()) {
                     System.out.println("Image path found " + assetImageJPEG);
                     this.assetImageFile = assetImageJPEG;
                 } else {
@@ -176,17 +176,17 @@ public abstract class Entity {
         if (this.assetImageFile == null) {
             this.assetImageFile = Path.of("/fallback.png").toFile();
             System.out.println("Asset image does not exist!");
-            if (!Path.of(Main.getInstance().assetsDir+"\\"+this.assetImageFile.toString()).toFile().exists()) {
+            if (!Path.of(Main.getInstance().assetsDir + "\\" + this.assetImageFile.toString()).toFile().exists()) {
                 System.out.println("Fallback image does not exist!");
-                BufferedImage image = new BufferedImage(2,2,BufferedImage.TYPE_INT_RGB);
+                BufferedImage image = new BufferedImage(2, 2, BufferedImage.TYPE_INT_RGB);
 
-                image.setRGB(1,0,Color.MAGENTA.getRGB());
-                image.setRGB(0,1,Color.MAGENTA.getRGB());
-                image.setRGB(0,0,Color.BLACK.getRGB());
-                image.setRGB(1,1,Color.BLACK.getRGB());
+                image.setRGB(1, 0, Color.MAGENTA.getRGB());
+                image.setRGB(0, 1, Color.MAGENTA.getRGB());
+                image.setRGB(0, 0, Color.BLACK.getRGB());
+                image.setRGB(1, 1, Color.BLACK.getRGB());
 
                 try {
-                    ImageIO.write(image, "png", Path.of(Main.getInstance().assetsDir+"\\"+this.assetImageFile.toString()).toFile());
+                    ImageIO.write(image, "png", Path.of(Main.getInstance().assetsDir + "\\" + this.assetImageFile.toString()).toFile());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -194,8 +194,8 @@ public abstract class Entity {
         }
         Image image = AssetsManager.getInstance().getImageFromFilePathString(assetImageFile.toString());
         AffineTransform tr = new AffineTransform();
-        tr.concatenate(AffineTransform.getTranslateInstance(this.collisionBox.getX1Absolute(),this.collisionBox.getY1Absolute()));
-        tr.scale(this.collisionBox.getX2Relative()/image.getWidth(null),this.collisionBox.getY2Relative()/image.getHeight(null));
+        tr.concatenate(AffineTransform.getTranslateInstance(this.collisionBox.getX1Absolute(), this.collisionBox.getY1Absolute()));
+        tr.scale(this.collisionBox.getX2Relative() / image.getWidth(null), this.collisionBox.getY2Relative() / image.getHeight(null));
         g2d.drawImage(image, tr, null);
     }
 }

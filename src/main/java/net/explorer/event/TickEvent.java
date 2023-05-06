@@ -6,11 +6,13 @@ import java.util.List;
 public class TickEvent {
     public interface TickListener {
         void onStartTick();
+
         void onEndTick();
     }
 
     public static class TickInitiator {
         private List<TickListener> listeners = new ArrayList<>();
+
         public void setListeners(List<TickListener> listeners) {
             this.listeners = listeners;
         }
