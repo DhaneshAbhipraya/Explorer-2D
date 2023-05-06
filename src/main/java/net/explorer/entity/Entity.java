@@ -1,13 +1,17 @@
 package net.explorer.entity;
 
 import net.explorer.Main;
+import net.explorer.assets.AssetsManager;
 import net.explorer.entity.util.Axis;
 import net.explorer.entity.util.CollisionBox;
 import net.explorer.event.TickEvent;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
+import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -22,9 +26,13 @@ public abstract class Entity {
     private double yAcc;
     public TickEvent.TickInitiator tickInitiator;
     public List<TickEvent.TickListener> listeners = new ArrayList<>();
+    private File assetImageFile;
 
-    public void init() { }
-    public void postInit() { }
+    public void init() {
+    }
+
+    public void postInit() {
+    }
 
     public Entity() {
         this.x = new Random().nextDouble(Main.width);
@@ -132,5 +140,41 @@ public abstract class Entity {
 
     public boolean canMove() {
         return false;
+    }
+
+    protected void useAssetDraw() {
+        String assetImagePathString = this.getClass().getName().replaceAll("^net\\.explorer\\.", "").replaceAll("(?:(\\w+)\\.)+", "$1/").toLowerCase();
+
+        File assetImagePNG = Path.of(assetImagePathString + ".png").toFile();
+        System.out.println("Searching " + assetImagePNG);
+        if (Path.of(Main.getInstance().assetsDir+"\\"+assetImagePNG.toString()).toFile().exists()) {
+            System.out.println("Image path found " + assetImagePNG);
+            this.assetImageFile = assetImagePNG;
+        } else {
+            File assetImageJPG = Path.of(assetImagePathString + ".jpg").toFile();
+            System.out.println("Searching " + assetImageJPG);
+            if (Path.of(Main.getInstance().assetsDir+"\\"+assetImageJPG.toString()).toFile().exists()) {
+                System.out.println("Image path found " + assetImageJPG);
+                this.assetImageFile = assetImageJPG;
+            } else {
+                File assetImageJPEG = Path.of(assetImagePathString + ".jpeg").toFile();
+                System.out.println("Searching " + assetImageJPEG);
+                if (Path.of(Main.getInstance().assetsDir+"\\"+assetImageJPEG.toString()).toFile().exists()) {
+                    System.out.println("Image path found " + assetImageJPEG);
+                    this.assetImageFile = assetImageJPEG;
+                } else {
+                    System.out.println("Image not found!");
+                }
+            }
+        }
+    }
+
+    public void assetDraw(Graphics2D g2d) {
+        if (this.assetImageFile == null) return;
+        Image image = AssetsManager.getInstance().getImageFromFilePathString(assetImageFile.toString());
+        AffineTransform tr = new AffineTransform();
+        tr.concatenate(AffineTransform.getTranslateInstance(this.collisionBox.getX1Absolute(),this.collisionBox.getY1Absolute()));
+        tr.scale(this.collisionBox.getX2Relative()/image.getWidth(null),this.collisionBox.getY2Relative()/image.getHeight(null));
+        g2d.drawImage(image, tr, null);
     }
 }

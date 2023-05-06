@@ -2,9 +2,10 @@ package net.explorer;
 
 import net.explorer.assets.AssetsManager;
 import net.explorer.entity.Box;
-import net.explorer.entity.Cat;
 import net.explorer.entity.Entity;
+import net.explorer.entity.Player;
 import net.explorer.event.Events;
+import net.explorer.world.World;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,20 +15,26 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 
 public class Main extends JPanel implements KeyListener {
     private static final long tps = 20;
     public static final int width = 800; // Width of the game screen
     public static final int height = 600; // Height of the game screen
     private Entity player;
-    private ArrayList<Entity> entities = new ArrayList<>();
+//    private ArrayList<Entity> entities = new ArrayList<>();
+    private World world;
     private double moveX;
     private double moveY;
     public final Path runDir;
     public final Path assetsDir;
+    private static Main instance;
+
+    public static Main getInstance() {
+        return instance;
+    }
 
     public Main(String runDir) {
+        instance = this;
         System.out.println("Running Directory: "+runDir);
         File file = Path.of(runDir, "runDirRoot").toFile();
         Path path = Path.of(runDir);
@@ -59,10 +66,11 @@ public class Main extends JPanel implements KeyListener {
         setPreferredSize(new Dimension(width, height));
         addKeyListener(this);
         setFocusable(true);
-        player = new Cat();
-        entities.add(player);
+        this.world = new World();
+        this.player = new Player();
+        this.world.spawnEntity(this.player);
         for (int i = 0; i < 100; i++)
-            entities.add(new Box());
+            this.world.spawnEntity(new Box());
     }
 
     public static void main(String[] args) throws InterruptedException {
@@ -84,9 +92,7 @@ public class Main extends JPanel implements KeyListener {
     public void tick() {
         Events.getInstance().tickInitiator.startTick();
         this.player.applyForce(this.moveX, this.moveY);
-        for (Entity entity : this.entities) {
-            entity.tick();
-        }
+        this.world.tick();
         Events.getInstance().tickInitiator.endTick();
     }
 
@@ -95,9 +101,9 @@ public class Main extends JPanel implements KeyListener {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        for (int i = 0; i < entities.size(); i++) {
-            this.entities.get(i).draw(g2d);
-            this.entities.get(i).drawCollisionBox(g2d);
+        for (int i = 0; i < this.world.getEntities().size(); i++) {
+            this.world.getEntities().get(i).draw(g2d);
+            this.world.getEntities().get(i).drawCollisionBox(g2d);
         }
 
         this.player.draw(g2d);
