@@ -170,7 +170,9 @@ public abstract class Entity {
     }
 
     public void assetDraw(Graphics2D g2d) {
-        if (this.assetImageFile == null) return;
+        if (this.assetImageFile == null) {
+            this.assetImageFile = Path.of("/fallback.png").toFile();
+        }
         Image image = AssetsManager.getInstance().getImageFromFilePathString(assetImageFile.toString());
         AffineTransform tr = new AffineTransform();
         tr.concatenate(AffineTransform.getTranslateInstance(this.collisionBox.getX1Absolute(),this.collisionBox.getY1Absolute()));
