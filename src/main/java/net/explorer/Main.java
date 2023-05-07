@@ -91,7 +91,7 @@ public class Main extends JPanel implements KeyListener {
 
     public void tick() {
         Events.getInstance().tickInitiator.startTick();
-        this.player.applyForce(this.moveX, this.moveY);
+        this.player.move(this.moveX, this.moveY);
         this.world.tick();
         Events.getInstance().tickInitiator.endTick();
     }
@@ -114,8 +114,8 @@ public class Main extends JPanel implements KeyListener {
     public void movePlayer(double dx, double dy) {
         if (this.player.canMove()) {
             // Set moveX and moveY accordingly
-            this.moveX = dx;
-            this.moveY = dy;
+            if (dx != 0) this.moveX = dx;
+            if (dy != 0) this.moveY = dy;
         }
     }
 
@@ -124,9 +124,7 @@ public class Main extends JPanel implements KeyListener {
         switch (key) {
             case KeyEvent.VK_LEFT -> movePlayer(-10, 0);
             case KeyEvent.VK_RIGHT -> movePlayer(10, 0);
-            case KeyEvent.VK_UP -> {
-                movePlayer(0, -10);
-            }
+            case KeyEvent.VK_UP -> movePlayer(0, -10);
             case KeyEvent.VK_DOWN -> movePlayer(0, 10);
         }
     }

@@ -137,8 +137,10 @@ public abstract class Entity {
     }
 
     public void move(double dx, double dy) {
-        this.x += dx;
-        this.y += dy;
+        if (this.canMove()) {
+            this.x += dx;
+            this.y += dy;
+        }
     }
 
     public boolean canMove() {
