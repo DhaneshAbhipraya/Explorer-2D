@@ -108,15 +108,19 @@ public class Main extends JPanel implements KeyListener {
 
         this.player.draw(g2d);
         this.player.drawCollisionBox(g2d);
+
+        // player name
+        g2d.setColor(Color.BLACK);
+        g2d.setFont(new Font("TimesRoman", Font.PLAIN, 25));
+        g2d.drawString("Player", (int) this.player.getX(), (int) this.player.getCollisionBox().getY2Absolute());
+
         repaint();
     }
 
     public void movePlayer(double dx, double dy) {
-        if (this.player.canMove()) {
-            // Set moveX and moveY accordingly
-            if (dx != 0) this.moveX = dx;
-            if (dy != 0) this.moveY = dy;
-        }
+        // Set moveX and moveY accordingly
+        if (dx != 0) this.moveX = dx;
+        if (dy != 0) this.moveY = dy;
     }
 
     public void keyPressed(KeyEvent e) {

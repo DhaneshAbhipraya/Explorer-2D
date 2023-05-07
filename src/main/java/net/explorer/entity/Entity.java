@@ -72,7 +72,7 @@ public abstract class Entity {
         this.xVel *= 0.5;
         this.yVel *= 0.5;
         if (this.collisionBox.isCollidingAxis(Axis.X, Main.width)) {
-            this.x = Main.width - this.collisionBox.getX2Relative();
+            this.x = Main.width - this.collisionBox.getX2Relative() + Math.abs(this.collisionBox.getX1Relative());
             this.xVel *= -0.8;
         }
         if (this.collisionBox.isCollidingAxis(Axis.X, 0)) {
@@ -80,7 +80,7 @@ public abstract class Entity {
             this.xVel *= -0.8;
         }
         if (this.collisionBox.isCollidingAxis(Axis.Y, Main.height)) {
-            this.y = Main.height - this.collisionBox.getY2Relative();
+            this.y = Main.height - this.collisionBox.getY2Relative() + Math.abs(this.collisionBox.getY1Relative());
             this.yVel *= -0.8;
         }
         if (this.collisionBox.isCollidingAxis(Axis.Y, 0)) {
@@ -89,7 +89,7 @@ public abstract class Entity {
         }
 
         if (this.collisionBox.getX2Absolute() > Main.width) {
-            this.x = Main.width - this.collisionBox.getX2Relative();
+            this.x = Main.width - this.collisionBox.getX2Relative() + Math.abs(this.collisionBox.getX1Relative());
             this.xVel *= -0.8;
         }
         if (this.collisionBox.getX1Absolute() < 0) {
@@ -97,7 +97,7 @@ public abstract class Entity {
             this.xVel *= -0.8;
         }
         if (this.collisionBox.getY2Absolute() > Main.height) {
-            this.y = Main.height - this.collisionBox.getY2Relative();
+            this.y = Main.height - this.collisionBox.getY2Relative() + Math.abs(this.collisionBox.getY1Relative());
             this.yVel = -0.8;
         }
         if (this.collisionBox.getY1Absolute() < 0) {
@@ -137,10 +137,9 @@ public abstract class Entity {
     }
 
     public void move(double dx, double dy) {
-        if (this.canMove()) {
-            this.x += dx;
-            this.y += dy;
-        }
+        double multiplier = this.canMove() ? 1.0F : 0.1F;
+        this.x += dx * multiplier;
+        this.y += dy * multiplier;
     }
 
     public boolean canMove() {
@@ -199,5 +198,9 @@ public abstract class Entity {
         tr.concatenate(AffineTransform.getTranslateInstance(this.collisionBox.getX1Absolute(), this.collisionBox.getY1Absolute()));
         tr.scale(this.collisionBox.getX2Relative() / image.getWidth(null), this.collisionBox.getY2Relative() / image.getHeight(null));
         g2d.drawImage(image, tr, null);
+    }
+
+    public CollisionBox getCollisionBox() {
+        return this.collisionBox;
     }
 }

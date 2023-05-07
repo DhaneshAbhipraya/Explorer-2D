@@ -42,11 +42,11 @@ public class CollisionBox {
     }
 
     public double getX2Absolute() {
-        return this.x2 + this.entity.getX();
+        return this.x2 + this.entity.getX() + this.x1;
     }
 
     public double getY2Absolute() {
-        return this.y2 + this.entity.getY();
+        return this.y2 + this.entity.getY() + this.y1;
     }
 
     public boolean isCollidingAxis(Axis axis, double axisPos) {
