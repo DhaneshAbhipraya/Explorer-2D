@@ -137,9 +137,11 @@ public abstract class Entity {
     }
 
     public void move(double dx, double dy) {
-        double multiplier = this.canMove() ? 1.0F : 0.1F;
-        this.x += dx * multiplier;
-        this.y += dy * multiplier;
+        if (this.canMove()) {
+            double multiplier = this.canMove() ? 1.0F : 0.1F;
+            this.x += dx * multiplier;
+            this.y += dy * multiplier;
+        } else this.applyForce(Math.min(Math.max(dx, -1), 1), Math.min(Math.max(dy, -1), 1));
     }
 
     public boolean canMove() {

@@ -110,9 +110,11 @@ public class Main extends JPanel implements KeyListener {
         this.player.drawCollisionBox(g2d);
 
         // player name
-        g2d.setColor(Color.BLACK);
-        g2d.setFont(new Font("TimesRoman", Font.PLAIN, 25));
-        g2d.drawString("Player", (int) this.player.getX(), (int) this.player.getCollisionBox().getY2Absolute());
+        g2d.setFont(new Font("", Font.PLAIN, 25));
+        g2d.setColor(new Color(0x80000000, true));
+        g2d.fillRect((int) (this.player.getX() - g2d.getFontMetrics().stringWidth("Player") / 2 - 5), (int) (this.player.getCollisionBox().getY1Absolute() - 10 - g2d.getFontMetrics().stringWidth("Player") / 2 + 8), g2d.getFontMetrics().stringWidth("Player") + 10, g2d.getFontMetrics().getHeight());
+        g2d.setColor(Color.WHITE);
+        g2d.drawString("Player", (int) (this.player.getX() - g2d.getFontMetrics().stringWidth("Player") / 2), (int) (this.player.getCollisionBox().getY1Absolute() - 10));
 
         repaint();
     }
