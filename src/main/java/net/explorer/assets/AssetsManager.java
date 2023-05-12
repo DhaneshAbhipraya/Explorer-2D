@@ -6,11 +6,14 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AssetsManager {
     private static AssetsManager instance;
     private Main main;
     private Path assetsDir;
+    private Map<String, Path> filePathCache;
 
     public AssetsManager() {
         instance = this;
@@ -25,6 +28,7 @@ public class AssetsManager {
 
     private void init() {
         this.assetsDir = this.main.assetsDir;
+        this.filePathCache = new HashMap<>();
     }
 
     public Image getImageFromFilePathString(String path) {
@@ -37,5 +41,23 @@ public class AssetsManager {
 
     public static AssetsManager getInstance() {
         return instance;
+    }
+
+    public Path addToCache(String name, Path path) {
+        this.filePathCache.put(name, path);
+        return path;
+    }
+
+    public boolean isAvailableInCache(String name) {
+        return this.filePathCache.containsKey(name);
+    }
+
+    public Path getPathInCache(String name) {
+        return this.filePathCache.get(name);
+    }
+
+    public Path getPathInCacheOrAddToCache(String name, Path fallback) {
+        if (this.isAvailableInCache(name)) return this.filePathCache.get(name);
+        else return this.addToCache(name, fallback);
     }
 }

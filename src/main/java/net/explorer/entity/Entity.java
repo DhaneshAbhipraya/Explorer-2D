@@ -160,6 +160,12 @@ public abstract class Entity {
 
     protected void useAssetDraw() {
         String assetImagePathString = this.getClass().getName().replaceAll("^net\\.explorer\\.", "").replaceAll("(?:(\\w+)\\.)+", "$1/").toLowerCase();
+        System.out.println("Searching " + assetImagePathString);
+        if (AssetsManager.getInstance().isAvailableInCache(assetImagePathString)) {
+            System.out.println("File found in cache. Reusing...");
+            this.assetImageFile = AssetsManager.getInstance().getPathInCache(assetImagePathString).toFile();
+            return;
+        }
 
         File assetImagePNG = Path.of(assetImagePathString + ".png").toFile();
         System.out.println("Searching " + assetImagePNG);
@@ -180,9 +186,11 @@ public abstract class Entity {
                     this.assetImageFile = assetImageJPEG;
                 } else {
                     System.out.println("Image not found!");
+                    return;
                 }
             }
         }
+        AssetsManager.getInstance().addToCache(assetImagePathString, this.assetImageFile.toPath());
     }
 
     public void assetDraw(Graphics2D g2d) {
