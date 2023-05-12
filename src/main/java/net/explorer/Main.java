@@ -2,6 +2,7 @@ package net.explorer;
 
 import net.explorer.assets.AssetsManager;
 import net.explorer.entity.Box;
+import net.explorer.entity.Cat;
 import net.explorer.entity.Entity;
 import net.explorer.entity.Player;
 import net.explorer.event.Events;
@@ -69,8 +70,8 @@ public class Main extends JPanel implements KeyListener {
         this.world = new World();
         this.player = new Player();
         this.world.spawnEntity(this.player);
-        for (int i = 0; i < 100; i++)
-            this.world.spawnEntity(new Box());
+        for (int i = 0; i < 10; i++) this.world.spawnEntity(new Box());
+        for (int i = 0; i < 10; i++) this.world.spawnEntity(new Cat());
     }
 
     public static void main(String[] args) throws InterruptedException {

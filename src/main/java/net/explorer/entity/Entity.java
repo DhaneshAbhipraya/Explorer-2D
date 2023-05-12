@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -30,6 +31,7 @@ public abstract class Entity {
     public TickEvent.TickInitiator tickInitiator;
     public List<TickEvent.TickListener> listeners = new ArrayList<>();
     private File assetImageFile;
+    private double angle;
 
     public void init() {
     }
@@ -44,6 +46,7 @@ public abstract class Entity {
         this.yVel = 0;
         this.xAcc = 0;
         this.yAcc = 0;
+        this.setAngle(new Random().nextDouble(Math.PI * 2));
         this.tickInitiator = new TickEvent.TickInitiator();
         this.init();
         this.postInit();
@@ -55,6 +58,8 @@ public abstract class Entity {
         g2d.setColor(Color.BLUE);
         Rectangle2D box = new Rectangle2D.Double(this.collisionBox.getX1Absolute(), this.collisionBox.getY1Absolute(), this.collisionBox.getX2Relative(), this.collisionBox.getY2Relative());
         Ellipse2D origin = new Ellipse2D.Double(x - 3, y - 3, 6, 6);
+        Line2D angle = new Line2D.Double(this.getX(), this.getY(), Math.cos(this.angle) * 100 + this.getX(), Math.sin(this.angle) * 100 + this.getY());
+        g2d.draw(angle);
         g2d.draw(box);
         g2d.fill(origin);
     }
@@ -138,10 +143,15 @@ public abstract class Entity {
 
     public void move(double dx, double dy) {
         if (this.canMove()) {
-            double multiplier = this.canMove() ? 1.0F : 0.1F;
-            this.x += dx * multiplier;
-            this.y += dy * multiplier;
+            this.x += dx;
+            this.y += dy;
         } else this.applyForce(Math.min(Math.max(dx, -1), 1), Math.min(Math.max(dy, -1), 1));
+    }
+
+    public void move(double amt) {
+        if (this.canMove()) {
+            move(Math.cos(this.angle) * amt, Math.sin(this.angle) * amt);
+        }
     }
 
     public boolean canMove() {
@@ -204,5 +214,13 @@ public abstract class Entity {
 
     public CollisionBox getCollisionBox() {
         return this.collisionBox;
+    }
+
+    public double getAngle() {
+        return angle;
+    }
+
+    public void setAngle(double angle) {
+        this.angle = angle;
     }
 }

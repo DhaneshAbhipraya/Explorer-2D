@@ -2,7 +2,9 @@ package net.explorer.entity.util.attributes;
 
 public class Attribute {
     private double value;
+    private final Attributes type;
     public Attribute(Attributes attribute) {
+        this.type = attribute;
         this.value = 0;
     }
 
@@ -12,5 +14,9 @@ public class Attribute {
 
     public double getValue() {
         return value;
+    }
+
+    public Attributes getType() {
+        return type;
     }
 }

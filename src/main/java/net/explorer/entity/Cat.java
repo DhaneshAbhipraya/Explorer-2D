@@ -1,7 +1,9 @@
 package net.explorer.entity;
 
-import net.explorer.ai.tasks.RandomMove;
+import net.explorer.ai.tasks.Walk;
 import net.explorer.entity.util.CollisionBox;
+import net.explorer.entity.util.attributes.Attribute;
+import net.explorer.entity.util.attributes.Attributes;
 
 import java.awt.*;
 
@@ -10,12 +12,13 @@ public class Cat extends LivingEntity {
     public Cat() {
         this.collisionBox = new CollisionBox(this, -50, -50, 100, 50);
         this.useAssetDraw();
+        this.attributes.add(new Attribute(Attributes.MOVEMENT_SPEED));
     }
 
     @Override
     public void postInit() {
         this.ai.setEnabled(true);
-        this.ai.taskQueue.add(new RandomMove());
+        this.ai.taskQueue.add(new Walk());
     }
 
     @Override

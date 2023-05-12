@@ -1,5 +1,5 @@
 package net.explorer.entity.util.attributes;
 
 public enum Attributes {
-    MAX_HEALTH,
+    MAX_HEALTH, MOVEMENT_SPEED
 }
