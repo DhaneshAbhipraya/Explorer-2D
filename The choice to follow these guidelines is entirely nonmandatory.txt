@@ -1,3 +1,3 @@
-The choice to follow these guidelines is entirely non-mandatory.
+The decision to follow these guidelines is completely voluntary, but it is encouraged to do so.
 
 1. Treating classes equally: This means that you should strive to have a consistent approach or treatment for all classes in the Java project. Instead of having classes with widely varying structures, behaviors, or interfaces, you should aim for a unified design pattern or structure across your classes.
