@@ -1,5 +1,6 @@
 package net.explorer.entity;
 
+import net.explorer.Constants;
 import net.explorer.Main;
 import net.explorer.assets.AssetsManager;
 import net.explorer.entity.util.Axis;
@@ -68,7 +69,8 @@ public abstract class Entity {
     public void tick() {
         this.tickInitiator.setListeners(this.listeners);
         this.tickInitiator.startTick();
-//        this.yAcc += 9.807;
+        if (Constants.GRAVITY_ENABLED)
+            this.yAcc += 9.807;
         this.xVel += this.xAcc;
         this.yVel += this.yAcc;
         this.x += this.xVel;
