@@ -3,13 +3,13 @@ package net.explorer.version;
 import java.util.Objects;
 
 public class MMPQVersion {
-    public static final MMPQVersion UNKNOWN = new MMPQVersion(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Qualifier.RELEASE);
-    private final int major;
-    private final int minor;
-    private final int patch;
+    public static final MMPQVersion UNKNOWN = new MMPQVersion(Long.MAX_VALUE, Long.MAX_VALUE, Long.MAX_VALUE, Qualifier.RELEASE);
+    private final long major;
+    private final long minor;
+    private final long patch;
     private final Qualifier qualifier;
 
-    public MMPQVersion(int major, int minor, int patch, Qualifier qualifier) {
+    public MMPQVersion(long major, long minor, long patch, Qualifier qualifier) {
         if (patch < 1 && minor < 1 && major < 1) throw new IllegalStateException("Version must not be less than 1");
         this.major = major;
         this.minor = minor;
@@ -25,20 +25,28 @@ public class MMPQVersion {
     }
 
     public static MMPQVersion parse(String versionString) {
-        // TODO: implement parsing mechanic
-        if (versionString.isEmpty())
-            return UNKNOWN;
+        if (versionString.isEmpty() || versionString.equals(UNKNOWN.toString())) return UNKNOWN;
         String[] parts = versionString.split("\\.");
         int major = Integer.parseInt(parts[0]);
         int minor = Integer.parseInt(parts[1]);
         int patch = Integer.parseInt(parts[2].split("-")[0]);
-        Qualifier qualifier = Qualifier.parse(parts[2].split("-")[1]);
+        String subLevel = "";
+        if (parts.length == 4)
+            subLevel = "." + parts[3];
+        else if (parts.length == 3)
+            subLevel = "";
+        String constructedString = "";
+        if (parts[2].split("-").length == 2)
+            constructedString = parts[2].split("-")[1] + subLevel;
+        else if (parts[2].split("-").length == 1)
+            constructedString = "";
+        Qualifier qualifier = Qualifier.parse(constructedString);
         return new MMPQVersion(major, minor, patch, qualifier);
     }
 
     @Override
     public String toString() {
-        return "%d.%d.%d-%s".formatted(major, minor, patch, qualifier);
+        return this == UNKNOWN ? "Unknown Version" : "%d.%d.%d%s".formatted(major, minor, patch, qualifier.equals(Qualifier.RELEASE) ? "" : ("-" + qualifier));
     }
 
     @Override
@@ -54,15 +62,15 @@ public class MMPQVersion {
         return Objects.hash(major, minor, patch, qualifier);
     }
 
-    public int getMajor() {
+    public long getMajor() {
         return major;
     }
 
-    public int getMinor() {
+    public long getMinor() {
         return minor;
     }
 
-    public int getPatch() {
+    public long getPatch() {
         return patch;
     }
 
@@ -71,10 +79,7 @@ public class MMPQVersion {
     }
 
     public enum Qualifier {
-        ALPHA(0),
-        BETA(1),
-        RC(2),
-        RELEASE(3);
+        ALPHA(0), BETA(1), RC(2), RELEASE(3);
 
         private final int level;
         private int subLevel;
@@ -89,7 +94,10 @@ public class MMPQVersion {
                 case "alpha" -> Qualifier.ALPHA;
                 case "beta" -> Qualifier.BETA;
                 case "rc" -> Qualifier.RC;
-            }).withSubLevel(Integer.parseInt(splitString[1]));
+                default -> Qualifier.RELEASE;
+            });
+            if (splitString.length == 2)
+                qualifier1.withSubLevel(Integer.parseInt(splitString[1]));
             return qualifier1;
         }
 

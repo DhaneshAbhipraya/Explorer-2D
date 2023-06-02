@@ -34,9 +34,20 @@ public class VersionTester {
             System.out.println("Test case 5 passed!");
         else System.out.println("Test case 5 failed.");
 
+        // Test case 6: Version parsing from string without subLevel
+        MMPQVersion version10 = MMPQVersion.parse("4.1.7-alpha");
+        if (Objects.equals(version10.getQualifier(), MMPQVersion.Qualifier.ALPHA) && version10.getMajor() == 4 && version10.getMinor() == 1 && version10.getPatch() == 7)
+            System.out.println("Test case 6 passed!");
+        else System.out.println("Test case 6 failed.");
 
-        // -- SnapshotVersion Testing --
-        System.out.println("SnapshotVersion testing");
+        // Test case 7: Version parsing from string without subLevel and with release qualifier
+        MMPQVersion version11 = MMPQVersion.parse("0.5.7");
+        if (Objects.equals(version11.getQualifier(), MMPQVersion.Qualifier.RELEASE) && version11.getMajor() == 0 && version11.getMinor() == 5 && version11.getPatch() == 7)
+            System.out.println("Test case 7 passed!");
+        else System.out.println("Test case 7 failed.");
+
+
+        System.out.println("Current version: " + System.getProperty("projectVersion"));
     }
 }
 

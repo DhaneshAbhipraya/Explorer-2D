@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'net.explorer'
-version = '0.5.0-alpha'
+version = "0.5.0-alpha"
 
 repositories {
     mavenCentral()
@@ -16,4 +16,12 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+tasks.register('writeVersionProperties') {
+    def versionPropertiesFile = file('version.properties')
+
+    doLast {
+        versionPropertiesFile.text = "version=${project.version}"
+    }
 }

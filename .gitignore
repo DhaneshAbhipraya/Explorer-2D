@@ -5,6 +5,7 @@ build/
 !**/src/test/**/build/
 run/runDirRoot
 run/assets/fallback.png
+version.properties
 
 
 ### IntelliJ IDEA ###

@@ -36,6 +36,7 @@ public class Main extends JPanel implements KeyListener {
 
     public Main(String runDir) {
         instance = this;
+        new Constants().register(this);
         System.out.println("Running Directory: " + runDir);
         File file = Path.of(runDir, "runDirRoot").toFile();
         Path path = Path.of(runDir);
@@ -78,10 +79,11 @@ public class Main extends JPanel implements KeyListener {
         new AssetsManager();
         new Events();
 //        TickEventTest.main(args);
-        JFrame frame = new JFrame("Explorer 2D");
         Main game = new Main(args[0]);
+        JFrame frame = new JFrame("Explorer 2D " + Constants.version);
         frame.add(game);
         frame.pack();
+        frame.setResizable(false);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         while (true) {
