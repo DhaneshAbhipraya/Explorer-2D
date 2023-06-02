@@ -1,12 +1,13 @@
-package net.explorer;
+package net.explorer.client.main;
 
-import net.explorer.assets.AssetsManager;
+import net.explorer.Constants;
+import net.explorer.client.assets.AssetsManager;
+import net.explorer.client.renderer.Camera;
+import net.explorer.client.renderer.WorldRenderer;
 import net.explorer.entity.Box;
 import net.explorer.entity.*;
 import net.explorer.event.Events;
-import net.explorer.renderer.Camera;
-import net.explorer.renderer.WorldRenderer;
-import net.explorer.world.World;
+import net.explorer.event.TickEvent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,12 +19,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class Main extends JPanel implements KeyListener {
-    private static final long tps = 20;
     public static final int width = 800; // Width of the game screen
     public static final int height = 600; // Height of the game screen
     private final Entity player;
     //    private ArrayList<Entity> entities = new ArrayList<>();
-    private final World world;
     private double moveX;
     private double moveY;
     public final Path runDir;
@@ -70,20 +69,31 @@ public class Main extends JPanel implements KeyListener {
         setPreferredSize(new Dimension(width, height));
         addKeyListener(this);
         setFocusable(true);
-        this.world = new World();
+        Events.getInstance().tickInitiator.addListener(new TickEvent.TickListener() {
+            @Override
+            public void onStartTick() {
+                tick();
+            }
+        });
         this.camera = new Camera();
-        this.worldRenderer = new WorldRenderer(world, camera);
+        this.worldRenderer = new WorldRenderer(net.explorer.server.main.Main.getInstance().world, camera);
         this.player = new Player();
-        if (player instanceof LivingEntity livingEntity)
-            livingEntity.setAIEnabled(false);
-        this.world.spawnEntity(this.player);
-        for (int i = 0; i < 10; i++) this.world.spawnEntity(new Box());
-        for (int i = 0; i < 10; i++) this.world.spawnEntity(new Cat());
+        if (player instanceof LivingEntity livingEntity) livingEntity.setAIEnabled(false);
+        net.explorer.server.main.Main.getInstance().world.spawnEntity(this.player);
+        for (int i = 0; i < 10; i++) net.explorer.server.main.Main.getInstance().world.spawnEntity(new Box());
+        for (int i = 0; i < 10; i++) net.explorer.server.main.Main.getInstance().world.spawnEntity(new Cat());
     }
 
     public static void main(String[] args) throws InterruptedException {
+        Runnable runnable = () -> {
+            try {
+                net.explorer.server.main.Main.main(args);
+            } catch (InterruptedException e) {
+                throw new RuntimeException("Unable to launch server!");
+            }
+        };
+        new Thread(runnable).start();
         new AssetsManager();
-        new Events();
 //        TickEventTest.main(args);
         Main game = new Main(args[0]);
         JFrame frame = new JFrame("Explorer 2D " + Constants.version);
@@ -92,18 +102,11 @@ public class Main extends JPanel implements KeyListener {
         frame.setResizable(false);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        while (true) {
-            game.tick();
-            Thread.sleep(1000L / tps);
-        }
     }
 
     public void tick() {
-        Events.getInstance().tickInitiator.startTick();
         this.player.move(this.moveX, this.moveY);
-        this.world.tick();
         this.camera.setPositionFromEntity(player);
-        Events.getInstance().tickInitiator.endTick();
     }
 
     public void paintComponent(Graphics g) {

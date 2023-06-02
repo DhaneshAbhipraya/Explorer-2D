@@ -1,11 +1,11 @@
 package net.explorer.entity;
 
 import net.explorer.ai.AI;
+import net.explorer.client.renderer.Camera;
 import net.explorer.entity.util.attributes.Attribute;
 import net.explorer.entity.util.attributes.AttributeList;
 import net.explorer.entity.util.attributes.Attributes;
 import net.explorer.event.TickEvent;
-import net.explorer.renderer.Camera;
 
 import java.awt.*;
 

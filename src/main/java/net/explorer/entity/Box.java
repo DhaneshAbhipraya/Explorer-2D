@@ -1,14 +1,14 @@
 package net.explorer.entity;
 
-import net.explorer.entity.util.CollisionBox;
-import net.explorer.renderer.Camera;
+import net.explorer.client.renderer.Camera;
+import net.explorer.entity.util.AABB;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
 public class Box extends Entity {
     public Box() {
-        this.collisionBox = new CollisionBox(this, -25, -50, 50, 50);
+        this.AABB = new AABB(this, -25, -50, 50, 50);
     }
 
     @Override

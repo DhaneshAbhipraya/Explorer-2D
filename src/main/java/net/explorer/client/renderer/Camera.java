@@ -1,4 +1,4 @@
-package net.explorer.renderer;
+package net.explorer.client.renderer;
 
 import net.explorer.entity.Entity;
 

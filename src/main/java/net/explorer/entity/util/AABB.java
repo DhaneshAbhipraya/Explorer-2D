@@ -2,14 +2,14 @@ package net.explorer.entity.util;
 
 import net.explorer.entity.Entity;
 
-public class CollisionBox {
+public class AABB {
     private final double x1;
     private final double y1;
     private final double x2;
     private final double y2;
     private final Entity entity;
 
-    public CollisionBox(Entity entity, double x1, double y1, double x2, double y2) {
+    public AABB(Entity entity, double x1, double y1, double x2, double y2) {
         this.x1 = x1;
         this.y1 = y1;
         this.x2 = x2;
@@ -54,5 +54,9 @@ public class CollisionBox {
             case X -> axisPos > this.getX1Absolute() && axisPos < this.getX2Absolute();
             case Y -> axisPos > this.getY1Absolute() && axisPos < this.getY2Absolute();
         };
+    }
+
+    public boolean isCollidingAABB(AABB other) {
+        return this.isCollidingAxis(Axis.X, other.getX1Absolute()) && this.isCollidingAxis(Axis.X, other.getX2Absolute()) && this.isCollidingAxis(Axis.Y, other.getY1Absolute()) && this.isCollidingAxis(Axis.Y, other.getY2Absolute());
     }
 }

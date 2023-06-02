@@ -1,5 +1,6 @@
 package net.explorer;
 
+import net.explorer.client.main.Main;
 import net.explorer.version.MMPQVersion;
 
 import java.io.IOException;
@@ -9,6 +10,7 @@ import java.util.Properties;
 
 public class Constants {
     public static final boolean GRAVITY_ENABLED = false;
+    public static final long tps = 20;
     public static MMPQVersion version;
     private Main main;
 

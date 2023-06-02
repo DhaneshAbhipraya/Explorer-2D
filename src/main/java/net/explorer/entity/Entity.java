@@ -1,11 +1,11 @@
 package net.explorer.entity;
 
 import net.explorer.Constants;
-import net.explorer.Main;
-import net.explorer.assets.AssetsManager;
-import net.explorer.entity.util.CollisionBox;
+import net.explorer.client.assets.AssetsManager;
+import net.explorer.client.main.Main;
+import net.explorer.client.renderer.Camera;
+import net.explorer.entity.util.AABB;
 import net.explorer.event.TickEvent;
-import net.explorer.renderer.Camera;
 
 import javax.imageio.IIOException;
 import javax.imageio.ImageIO;
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Entity {
-    protected CollisionBox collisionBox = new CollisionBox(this, 0, 0, 0, 0);
+    protected AABB AABB = new AABB(this, 0, 0, 0, 0);
     private double x;
     private double y;
     private double xVel;
@@ -59,7 +59,7 @@ public abstract class Entity {
     public void drawCollisionBox(Graphics2D g2d, Camera camera) {
 //        g2d.translate(camera.getX()+Main.width/2, camera.getY()+Main.height/2);
         g2d.setColor(Color.BLUE);
-        Rectangle2D box = new Rectangle2D.Double(this.collisionBox.getX1Absolute(), this.collisionBox.getY1Absolute(), this.collisionBox.getX2Relative(), this.collisionBox.getY2Relative());
+        Rectangle2D box = new Rectangle2D.Double(this.AABB.getX1Absolute(), this.AABB.getY1Absolute(), this.AABB.getX2Relative(), this.AABB.getY2Relative());
         Ellipse2D origin = new Ellipse2D.Double(x - 3, y - 3, 6, 6);
         Line2D angle = new Line2D.Double(this.getX(), this.getY(), Math.cos(this.angle) * 100 + this.getX(), Math.sin(this.angle) * 100 + this.getY());
         g2d.draw(angle);
@@ -220,8 +220,8 @@ public abstract class Entity {
         try {
             Image image = AssetsManager.getInstance().getImageFromFilePathString(assetImageFile.toString());
             AffineTransform tr = new AffineTransform();
-            tr.concatenate(AffineTransform.getTranslateInstance(this.collisionBox.getX1Absolute(), this.collisionBox.getY1Absolute()));
-            tr.scale(this.collisionBox.getX2Relative() / image.getWidth(null), this.collisionBox.getY2Relative() / image.getHeight(null));
+            tr.concatenate(AffineTransform.getTranslateInstance(this.AABB.getX1Absolute(), this.AABB.getY1Absolute()));
+            tr.scale(this.AABB.getX2Relative() / image.getWidth(null), this.AABB.getY2Relative() / image.getHeight(null));
             g2d.drawImage(image, tr, null);
         } catch (RuntimeException e) {
             if (e.getCause() instanceof IIOException) {
@@ -231,8 +231,8 @@ public abstract class Entity {
         }
     }
 
-    public CollisionBox getCollisionBox() {
-        return this.collisionBox;
+    public AABB getCollisionBox() {
+        return this.AABB;
     }
 
     public double getAngle() {

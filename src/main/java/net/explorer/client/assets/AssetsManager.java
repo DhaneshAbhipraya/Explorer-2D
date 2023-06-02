@@ -1,6 +1,6 @@
-package net.explorer.assets;
+package net.explorer.client.assets;
 
-import net.explorer.Main;
+import net.explorer.client.main.Main;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

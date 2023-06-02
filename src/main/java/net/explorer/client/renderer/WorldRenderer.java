@@ -1,6 +1,6 @@
-package net.explorer.renderer;
+package net.explorer.client.renderer;
 
-import net.explorer.Main;
+import net.explorer.client.main.Main;
 import net.explorer.entity.Player;
 import net.explorer.world.World;
 

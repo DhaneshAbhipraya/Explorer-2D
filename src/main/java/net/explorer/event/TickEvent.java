@@ -5,9 +5,11 @@ import java.util.List;
 
 public class TickEvent {
     public interface TickListener {
-        void onStartTick();
+        default void onStartTick() {
+        }
 
-        void onEndTick();
+        default void onEndTick() {
+        }
     }
 
     public static class TickInitiator {

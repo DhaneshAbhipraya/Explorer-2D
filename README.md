@@ -9,7 +9,9 @@ A thing...
 - Open a command prompt or terminal window on your computer.
 - Type `java -version` to check if Java is installed on your system. If you see a version number displayed, Java is installed.
 - Navigate to the directory where the extracted Java application is located using the "cd" command.
-- Once you are in the directory with Explorer2D, type `java -cp .\Explorer_2D.main.jar net.explorer.Main <run_directory>` to run the application. Replace `<run_directory>` with the run directory.
+- Once you are in the directory with Explorer2D,
+  type `java -cp .\Explorer_2D.main.jar net.explorer.client.main.Main <run_directory>` to run the application.
+  Replace `<run_directory>` with the run directory.
 - Press Enter to start Explorer2D.
 
 Note: If Java is not installed on your system, you can download and install it from the [official Java website](https://www.java.com/en/download/).

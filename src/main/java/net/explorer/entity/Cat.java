@@ -1,17 +1,17 @@
 package net.explorer.entity;
 
 import net.explorer.ai.tasks.Walk;
-import net.explorer.entity.util.CollisionBox;
+import net.explorer.client.renderer.Camera;
+import net.explorer.entity.util.AABB;
 import net.explorer.entity.util.attributes.Attribute;
 import net.explorer.entity.util.attributes.Attributes;
-import net.explorer.renderer.Camera;
 
 import java.awt.*;
 
 public class Cat extends LivingEntity {
 
     public Cat() {
-        this.collisionBox = new CollisionBox(this, -50, -50, 100, 50);
+        this.AABB = new AABB(this, -50, -50, 100, 50);
         this.useAssetDraw();
         this.attributes.add(new Attribute(Attributes.MOVEMENT_SPEED));
     }
