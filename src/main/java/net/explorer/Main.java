@@ -2,10 +2,10 @@ package net.explorer;
 
 import net.explorer.assets.AssetsManager;
 import net.explorer.entity.Box;
-import net.explorer.entity.Cat;
-import net.explorer.entity.Entity;
-import net.explorer.entity.Player;
+import net.explorer.entity.*;
 import net.explorer.event.Events;
+import net.explorer.renderer.Camera;
+import net.explorer.renderer.WorldRenderer;
 import net.explorer.world.World;
 
 import javax.swing.*;
@@ -29,6 +29,8 @@ public class Main extends JPanel implements KeyListener {
     public final Path runDir;
     public final Path assetsDir;
     private static Main instance;
+    private final Camera camera;
+    private final WorldRenderer worldRenderer;
 
     public static Main getInstance() {
         return instance;
@@ -69,7 +71,11 @@ public class Main extends JPanel implements KeyListener {
         addKeyListener(this);
         setFocusable(true);
         this.world = new World();
+        this.camera = new Camera();
+        this.worldRenderer = new WorldRenderer(world, camera);
         this.player = new Player();
+        if (player instanceof LivingEntity livingEntity)
+            livingEntity.setAIEnabled(false);
         this.world.spawnEntity(this.player);
         for (int i = 0; i < 10; i++) this.world.spawnEntity(new Box());
         for (int i = 0; i < 10; i++) this.world.spawnEntity(new Cat());
@@ -96,28 +102,14 @@ public class Main extends JPanel implements KeyListener {
         Events.getInstance().tickInitiator.startTick();
         this.player.move(this.moveX, this.moveY);
         this.world.tick();
+        this.camera.setPositionFromEntity(player);
         Events.getInstance().tickInitiator.endTick();
     }
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-        for (int i = 0; i < this.world.getEntities().size(); i++) {
-            this.world.getEntities().get(i).draw(g2d);
-            this.world.getEntities().get(i).drawCollisionBox(g2d);
-        }
-
-        this.player.draw(g2d);
-        this.player.drawCollisionBox(g2d);
-
-        // player name
-        g2d.setFont(new Font("", Font.PLAIN, 25));
-        g2d.setColor(new Color(0x80000000, true));
-        g2d.fillRect((int) (this.player.getX() - g2d.getFontMetrics().stringWidth("Player") / 2 - 5), (int) (this.player.getCollisionBox().getY1Absolute() - 10 - g2d.getFontMetrics().stringWidth("Player") / 2 + 8), g2d.getFontMetrics().stringWidth("Player") + 10, g2d.getFontMetrics().getHeight());
-        g2d.setColor(Color.WHITE);
-        g2d.drawString("Player", (int) (this.player.getX() - g2d.getFontMetrics().stringWidth("Player") / 2), (int) (this.player.getCollisionBox().getY1Absolute() - 10));
+        worldRenderer.render(g2d, camera);
 
         repaint();
     }

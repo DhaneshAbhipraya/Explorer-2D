@@ -3,9 +3,9 @@ package net.explorer.entity;
 import net.explorer.Constants;
 import net.explorer.Main;
 import net.explorer.assets.AssetsManager;
-import net.explorer.entity.util.Axis;
 import net.explorer.entity.util.CollisionBox;
 import net.explorer.event.TickEvent;
+import net.explorer.renderer.Camera;
 
 import javax.imageio.IIOException;
 import javax.imageio.ImageIO;
@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public abstract class Entity {
     protected CollisionBox collisionBox = new CollisionBox(this, 0, 0, 0, 0);
@@ -42,21 +41,23 @@ public abstract class Entity {
     }
 
     public Entity() {
-        this.x = new Random().nextDouble(Main.width);
-        this.y = new Random().nextDouble(Main.height);
+        this.x = 0;
+        this.y = 0;
         this.xVel = 0;
         this.yVel = 0;
         this.xAcc = 0;
         this.yAcc = 0;
-        this.setAngle(new Random().nextDouble(Math.PI * 2));
+        this.setAngle(0);
         this.tickInitiator = new TickEvent.TickInitiator();
         this.init();
         this.postInit();
     }
 
-    public abstract void draw(Graphics2D g2d);
+    public void draw(Graphics2D g2d, Camera camera) {
+    }
 
-    public void drawCollisionBox(Graphics2D g2d) {
+    public void drawCollisionBox(Graphics2D g2d, Camera camera) {
+//        g2d.translate(camera.getX()+Main.width/2, camera.getY()+Main.height/2);
         g2d.setColor(Color.BLUE);
         Rectangle2D box = new Rectangle2D.Double(this.collisionBox.getX1Absolute(), this.collisionBox.getY1Absolute(), this.collisionBox.getX2Relative(), this.collisionBox.getY2Relative());
         Ellipse2D origin = new Ellipse2D.Double(x - 3, y - 3, 6, 6);
@@ -79,39 +80,39 @@ public abstract class Entity {
         this.yAcc *= 0;
         this.xVel *= 0.5;
         this.yVel *= 0.5;
-        if (this.collisionBox.isCollidingAxis(Axis.X, Main.width)) {
-            this.x = Main.width - this.collisionBox.getX2Relative() + Math.abs(this.collisionBox.getX1Relative());
-            this.xVel *= -0.8;
-        }
-        if (this.collisionBox.isCollidingAxis(Axis.X, 0)) {
-            this.x = 0 - this.collisionBox.getX1Relative();
-            this.xVel *= -0.8;
-        }
-        if (this.collisionBox.isCollidingAxis(Axis.Y, Main.height)) {
-            this.y = Main.height - this.collisionBox.getY2Relative() + Math.abs(this.collisionBox.getY1Relative());
-            this.yVel *= -0.8;
-        }
-        if (this.collisionBox.isCollidingAxis(Axis.Y, 0)) {
-            this.y = 0 - this.collisionBox.getY1Relative();
-            this.yVel *= -0.8;
-        }
-
-        if (this.collisionBox.getX2Absolute() > Main.width) {
-            this.x = Main.width - this.collisionBox.getX2Relative() + Math.abs(this.collisionBox.getX1Relative());
-            this.xVel *= -0.8;
-        }
-        if (this.collisionBox.getX1Absolute() < 0) {
-            this.x = 0 - this.collisionBox.getX1Relative();
-            this.xVel *= -0.8;
-        }
-        if (this.collisionBox.getY2Absolute() > Main.height) {
-            this.y = Main.height - this.collisionBox.getY2Relative() + Math.abs(this.collisionBox.getY1Relative());
-            this.yVel = -0.8;
-        }
-        if (this.collisionBox.getY1Absolute() < 0) {
-            this.y = 0 - this.collisionBox.getY1Relative();
-            this.yVel = -0.8;
-        }
+//        if (this.collisionBox.isCollidingAxis(Axis.X, Main.width)) {
+//            this.x = Main.width - this.collisionBox.getX2Relative() + Math.abs(this.collisionBox.getX1Relative());
+//            this.xVel *= -0.8;
+//        }
+//        if (this.collisionBox.isCollidingAxis(Axis.X, 0)) {
+//            this.x = 0 - this.collisionBox.getX1Relative();
+//            this.xVel *= -0.8;
+//        }
+//        if (this.collisionBox.isCollidingAxis(Axis.Y, Main.height)) {
+//            this.y = Main.height - this.collisionBox.getY2Relative() + Math.abs(this.collisionBox.getY1Relative());
+//            this.yVel *= -0.8;
+//        }
+//        if (this.collisionBox.isCollidingAxis(Axis.Y, 0)) {
+//            this.y = 0 - this.collisionBox.getY1Relative();
+//            this.yVel *= -0.8;
+//        }
+//
+//        if (this.collisionBox.getX2Absolute() > Main.width) {
+//            this.x = Main.width - this.collisionBox.getX2Relative() + Math.abs(this.collisionBox.getX1Relative());
+//            this.xVel *= -0.8;
+//        }
+//        if (this.collisionBox.getX1Absolute() < 0) {
+//            this.x = 0 - this.collisionBox.getX1Relative();
+//            this.xVel *= -0.8;
+//        }
+//        if (this.collisionBox.getY2Absolute() > Main.height) {
+//            this.y = Main.height - this.collisionBox.getY2Relative() + Math.abs(this.collisionBox.getY1Relative());
+//            this.yVel = -0.8;
+//        }
+//        if (this.collisionBox.getY1Absolute() < 0) {
+//            this.y = 0 - this.collisionBox.getY1Relative();
+//            this.yVel = -0.8;
+//        }
         this.tickInitiator.endTick();
     }
 
@@ -145,16 +146,15 @@ public abstract class Entity {
     }
 
     public void move(double dx, double dy) {
+        int maxMove = 50;
         if (this.canMove()) {
             this.x += dx;
             this.y += dy;
-        } else this.applyForce(Math.min(Math.max(dx, -1), 1), Math.min(Math.max(dy, -1), 1));
+        } else this.applyForce(Math.min(Math.max(dx, -maxMove), maxMove), Math.min(Math.max(dy, -maxMove), maxMove));
     }
 
     public void move(double amt) {
-        if (this.canMove()) {
-            move(Math.cos(this.angle) * amt, Math.sin(this.angle) * amt);
-        }
+        move(Math.cos(this.angle) * amt, Math.sin(this.angle) * amt);
     }
 
     public boolean canMove() {

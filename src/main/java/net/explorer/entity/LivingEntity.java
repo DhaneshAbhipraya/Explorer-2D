@@ -5,11 +5,23 @@ import net.explorer.entity.util.attributes.Attribute;
 import net.explorer.entity.util.attributes.AttributeList;
 import net.explorer.entity.util.attributes.Attributes;
 import net.explorer.event.TickEvent;
+import net.explorer.renderer.Camera;
+
+import java.awt.*;
 
 public abstract class LivingEntity extends Entity {
     private double health;
     protected AI ai;
     protected AttributeList attributes;
+
+    @Override
+    public void draw(Graphics2D g2d, Camera camera) {
+        super.draw(g2d, camera);
+    }
+
+    public void setAIEnabled(boolean enabled) {
+        this.ai.setEnabled(enabled);
+    }
 
     private class tl1 implements TickEvent.TickListener {
 

@@ -4,6 +4,7 @@ import net.explorer.ai.tasks.Walk;
 import net.explorer.entity.util.CollisionBox;
 import net.explorer.entity.util.attributes.Attribute;
 import net.explorer.entity.util.attributes.Attributes;
+import net.explorer.renderer.Camera;
 
 import java.awt.*;
 
@@ -22,7 +23,8 @@ public class Cat extends LivingEntity {
     }
 
     @Override
-    public void draw(Graphics2D g2d) {
+    public void draw(Graphics2D g2d, Camera camera) {
+        super.draw(g2d, camera);
 //        Image catImage = AssetsManager.getInstance().getImageFromFilePathString("entity/cat.png");
 //        AffineTransform tr = new AffineTransform();
 //        tr.concatenate(AffineTransform.getTranslateInstance(this.collisionBox.getX1Absolute(),this.collisionBox.getY1Absolute()));
