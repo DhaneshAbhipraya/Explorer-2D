@@ -3,6 +3,7 @@
 A thing...
 
 ## How to run
+
 - Make sure you have Java installed
 - Download and save the ZIP file containing the Java application to your computer.
 - Extract the contents of the ZIP file to a directory of your choice using an unzip utility such as WinZip, 7-Zip, or the built-in archive utility of your operating system.
