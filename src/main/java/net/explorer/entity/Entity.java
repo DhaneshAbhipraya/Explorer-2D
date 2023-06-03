@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public abstract class Entity {
     protected AABB AABB = new AABB(this, 0, 0, 0, 0);
@@ -41,8 +42,8 @@ public abstract class Entity {
     }
 
     public Entity() {
-        this.x = 0;
-        this.y = 0;
+        this.x = new Random().nextDouble(100);
+        this.y = new Random().nextDouble(100);
         this.xVel = 0;
         this.yVel = 0;
         this.xAcc = 0;
@@ -65,6 +66,32 @@ public abstract class Entity {
         g2d.draw(angle);
         g2d.draw(box);
         g2d.fill(origin);
+    }
+
+    public void handleCollisions(Entity other) {
+        if (this.AABB.isCollidingAABB(other.AABB)) {
+
+            // Calculate the penetration vector
+            double penetrationX = other.x - this.x;
+            double penetrationY = other.y - this.y;
+
+            // Calculate the magnitude of the penetration vector
+            double penetrationMagnitude = Math.sqrt(penetrationX * penetrationX + penetrationY * penetrationY);
+
+            // Normalize the penetration vector
+            double normalX = penetrationX / penetrationMagnitude;
+            double normalY = penetrationY / penetrationMagnitude;
+
+            // Calculate the separation vector
+            double separationX = penetrationMagnitude * normalX;
+            double separationY = penetrationMagnitude * normalY;
+
+            // Apply the separation force to move the entities
+            this.applyForce(-separationX / 10, -separationY / 10);
+            other.applyForce(separationX / 10, separationY / 10);
+//            this.applyForce(normalX, normalY);
+//            other.applyForce(normalX, normalY);
+        }
     }
 
     public void tick() {
@@ -148,8 +175,9 @@ public abstract class Entity {
     public void move(double dx, double dy) {
         int maxMove = 50;
         if (this.canMove()) {
-            this.x += dx;
-            this.y += dy;
+//            this.x += dx;
+//            this.y += dy;
+            this.applyForce(dx, dy);
         } else this.applyForce(Math.min(Math.max(dx, -maxMove), maxMove), Math.min(Math.max(dy, -maxMove), maxMove));
     }
 

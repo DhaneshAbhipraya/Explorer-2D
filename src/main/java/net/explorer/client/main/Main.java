@@ -8,6 +8,7 @@ import net.explorer.entity.Box;
 import net.explorer.entity.*;
 import net.explorer.event.Events;
 import net.explorer.event.TickEvent;
+import net.explorer.server.main.Server;
 
 import javax.swing.*;
 import java.awt.*;
@@ -76,18 +77,18 @@ public class Main extends JPanel implements KeyListener {
             }
         });
         this.camera = new Camera();
-        this.worldRenderer = new WorldRenderer(net.explorer.server.main.Main.getInstance().world, camera);
+        this.worldRenderer = new WorldRenderer(Server.getInstance().world, camera);
         this.player = new Player();
         if (player instanceof LivingEntity livingEntity) livingEntity.setAIEnabled(false);
-        net.explorer.server.main.Main.getInstance().world.spawnEntity(this.player);
-        for (int i = 0; i < 10; i++) net.explorer.server.main.Main.getInstance().world.spawnEntity(new Box());
-        for (int i = 0; i < 10; i++) net.explorer.server.main.Main.getInstance().world.spawnEntity(new Cat());
+        Server.getInstance().world.spawnEntity(this.player);
+        for (int i = 0; i < 10; i++) Server.getInstance().world.spawnEntity(new Box());
+        for (int i = 0; i < 10; i++) Server.getInstance().world.spawnEntity(new Cat());
     }
 
     public static void main(String[] args) throws InterruptedException {
         Runnable runnable = () -> {
             try {
-                net.explorer.server.main.Main.main(args);
+                Server.main(args);
             } catch (InterruptedException e) {
                 throw new RuntimeException("Unable to launch server!");
             }

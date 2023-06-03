@@ -6,12 +6,12 @@ import net.explorer.world.World;
 
 import static net.explorer.Constants.tps;
 
-public class Main {
-    private static Main instance;
+public class Server {
+    private static Server instance;
     private final GameLogic gameLogic;
     public World world;
 
-    private Main() throws InterruptedException {
+    private Server() throws InterruptedException {
         instance = this;
         world = new World();
         gameLogic = new GameLogic();
@@ -21,12 +21,12 @@ public class Main {
         }
     }
 
-    public static Main getInstance() {
+    public static Server getInstance() {
         return instance;
     }
 
     public static void main(String[] args) throws InterruptedException {
         new Events();
-        Main server = new Main();
+        Server server = new Server();
     }
 }

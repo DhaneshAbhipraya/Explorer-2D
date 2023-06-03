@@ -57,6 +57,6 @@ public class AABB {
     }
 
     public boolean isCollidingAABB(AABB other) {
-        return this.isCollidingAxis(Axis.X, other.getX1Absolute()) && this.isCollidingAxis(Axis.X, other.getX2Absolute()) && this.isCollidingAxis(Axis.Y, other.getY1Absolute()) && this.isCollidingAxis(Axis.Y, other.getY2Absolute());
+        return !(this.getX1Absolute() >= other.getX2Absolute() || this.getX2Absolute() <= other.getX1Absolute() || this.getY1Absolute() >= other.getY2Absolute() || this.getY2Absolute() <= other.getY1Absolute());
     }
 }
