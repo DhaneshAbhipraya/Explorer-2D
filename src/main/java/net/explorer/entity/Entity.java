@@ -21,6 +21,10 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
+
+import static net.explorer.Constants.tps;
+import static net.explorer.client.main.Main.lock;
 
 public abstract class Entity {
     protected AABB AABB = new AABB(this, 0, 0, 0, 0);
@@ -97,8 +101,7 @@ public abstract class Entity {
     public void tick() {
         this.tickInitiator.setListeners(this.listeners);
         this.tickInitiator.startTick();
-        if (Constants.GRAVITY_ENABLED)
-            this.yAcc += 9.807;
+        if (Constants.GRAVITY_ENABLED) this.yAcc += 9.807;
         this.xVel += this.xAcc;
         this.yVel += this.yAcc;
         this.x += this.xVel;
@@ -190,71 +193,89 @@ public abstract class Entity {
     }
 
     protected void useAssetDraw() {
-        String assetImagePathString = this.getClass().getName().replaceAll("^net\\.explorer\\.", "").replaceAll("(?:(\\w+)\\.)+", "$1/").toLowerCase();
-        System.out.println("Searching " + assetImagePathString);
-        if (AssetsManager.getInstance().isAvailableInCache(assetImagePathString)) {
-            System.out.println("File found in cache. Reusing...");
-            this.assetImageFile = AssetsManager.getInstance().getPathInCache(assetImagePathString).toFile();
-            return;
-        }
-
-        File assetImagePNG = Path.of(assetImagePathString + ".png").toFile();
-        System.out.println("Searching " + assetImagePNG);
-        if (Path.of(Main.getInstance().assetsDir + "\\" + assetImagePNG).toFile().exists()) {
-            System.out.println("Image path found " + assetImagePNG);
-            this.assetImageFile = assetImagePNG;
-        } else {
-            File assetImageJPG = Path.of(assetImagePathString + ".jpg").toFile();
-            System.out.println("Searching " + assetImageJPG);
-            if (Path.of(Main.getInstance().assetsDir + "\\" + assetImageJPG).toFile().exists()) {
-                System.out.println("Image path found " + assetImageJPG);
-                this.assetImageFile = assetImageJPG;
-            } else {
-                File assetImageJPEG = Path.of(assetImagePathString + ".jpeg").toFile();
-                System.out.println("Searching " + assetImageJPEG);
-                if (Path.of(Main.getInstance().assetsDir + "\\" + assetImageJPEG).toFile().exists()) {
-                    System.out.println("Image path found " + assetImageJPEG);
-                    this.assetImageFile = assetImageJPEG;
-                } else {
-                    System.out.println("Image not found!");
-                    return;
-                }
-            }
-        }
-        System.out.println("Adding to cache...");
-        AssetsManager.getInstance().addToCache(assetImagePathString, this.assetImageFile.toPath());
-    }
-
-    public void assetDraw(Graphics2D g2d) {
-        if (this.assetImageFile == null) {
-            this.assetImageFile = Path.of("/fallback.png").toFile();
-            System.out.println("Asset image does not exist!");
-            if (!Path.of(Main.getInstance().assetsDir + "\\" + this.assetImageFile.toString()).toFile().exists()) {
-                System.out.println("Fallback image does not exist! Creating...");
-                BufferedImage image = new BufferedImage(2, 2, BufferedImage.TYPE_INT_RGB);
-
-                image.setRGB(1, 0, Color.MAGENTA.getRGB());
-                image.setRGB(0, 1, Color.MAGENTA.getRGB());
-                image.setRGB(0, 0, Color.BLACK.getRGB());
-                image.setRGB(1, 1, Color.BLACK.getRGB());
-
+        CompletableFuture.runAsync(() -> {
+            while (!Main.ready) {
                 try {
-                    ImageIO.write(image, "png", Path.of(Main.getInstance().assetsDir + "\\" + this.assetImageFile.toString()).toFile());
-                } catch (IOException e) {
+                    Thread.sleep(1000L / tps);
+                } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
-        }
-        try {
-            Image image = AssetsManager.getInstance().getImageFromFilePathString(assetImageFile.toString());
-            AffineTransform tr = new AffineTransform();
-            tr.concatenate(AffineTransform.getTranslateInstance(this.AABB.getX1Absolute(), this.AABB.getY1Absolute()));
-            tr.scale(this.AABB.getX2Relative() / image.getWidth(null), this.AABB.getY2Relative() / image.getHeight(null));
-            g2d.drawImage(image, tr, null);
-        } catch (RuntimeException e) {
-            if (e.getCause() instanceof IIOException) {
-                System.out.println("Unable to read image! Using fallback image...");
-                this.assetImageFile = null;
+            String assetImagePathString = this.getClass().getName().replaceAll("^net\\.explorer\\.", "").replaceAll("(?:(\\w+)\\.)+", "$1/").toLowerCase();
+            System.out.println("Searching " + assetImagePathString);
+            if (AssetsManager.getInstance().isAvailableInCache(assetImagePathString)) {
+                System.out.println("File found in cache. Reusing...");
+                this.assetImageFile = AssetsManager.getInstance().getPathInCache(assetImagePathString).toFile();
+                return;
+            }
+
+            File assetImagePNG = Path.of(assetImagePathString + ".png").toFile();
+            System.out.println("Searching " + assetImagePNG);
+            if (Path.of(Main.getInstance().assetsDir + "\\" + assetImagePNG).toFile().exists()) {
+                System.out.println("Image path found " + assetImagePNG);
+                this.assetImageFile = assetImagePNG;
+            } else {
+                File assetImageJPG = Path.of(assetImagePathString + ".jpg").toFile();
+                System.out.println("Searching " + assetImageJPG);
+                if (Path.of(Main.getInstance().assetsDir + "\\" + assetImageJPG).toFile().exists()) {
+                    System.out.println("Image path found " + assetImageJPG);
+                    this.assetImageFile = assetImageJPG;
+                } else {
+                    File assetImageJPEG = Path.of(assetImagePathString + ".jpeg").toFile();
+                    System.out.println("Searching " + assetImageJPEG);
+                    if (Path.of(Main.getInstance().assetsDir + "\\" + assetImageJPEG).toFile().exists()) {
+                        System.out.println("Image path found " + assetImageJPEG);
+                        this.assetImageFile = assetImageJPEG;
+                    } else {
+                        System.out.println("Image not found!");
+                        return;
+                    }
+                }
+            }
+            System.out.println("Adding to cache...");
+            AssetsManager.getInstance().addToCache(assetImagePathString, this.assetImageFile.toPath());
+        });
+    }
+
+    public void assetDraw(Graphics2D g2d) {
+        synchronized (lock) {
+            while (!Main.ready) {
+                try {
+                    lock.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            if (this.assetImageFile == null) {
+                this.assetImageFile = Path.of("/fallback.png").toFile();
+                System.out.println("Asset image does not exist!");
+                if (!Path.of(Main.getInstance().assetsDir + "\\" + this.assetImageFile.toString()).toFile().exists()) {
+                    System.out.println("Fallback image does not exist! Creating...");
+                    BufferedImage image = new BufferedImage(2, 2, BufferedImage.TYPE_INT_RGB);
+
+                    image.setRGB(1, 0, Color.MAGENTA.getRGB());
+                    image.setRGB(0, 1, Color.MAGENTA.getRGB());
+                    image.setRGB(0, 0, Color.BLACK.getRGB());
+                    image.setRGB(1, 1, Color.BLACK.getRGB());
+
+                    try {
+                        ImageIO.write(image, "png", Path.of(Main.getInstance().assetsDir + "\\" + this.assetImageFile.toString()).toFile());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            try {
+                Image image = AssetsManager.getInstance().getImageFromFilePathString(assetImageFile.toString());
+                AffineTransform tr = new AffineTransform();
+                tr.concatenate(AffineTransform.getTranslateInstance(this.AABB.getX1Absolute(), this.AABB.getY1Absolute()));
+                tr.scale(this.AABB.getX2Relative() / image.getWidth(null), this.AABB.getY2Relative() / image.getHeight(null));
+                g2d.drawImage(image, tr, null);
+            } catch (RuntimeException e) {
+                if (e.getCause() instanceof IIOException) {
+                    System.out.println("Unable to read image! Using fallback image...");
+                    this.assetImageFile = null;
+                }
             }
         }
     }

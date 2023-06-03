@@ -13,22 +13,22 @@ public class AssetsManager {
     private static AssetsManager instance;
     private Main main;
     private Path assetsDir;
-    private Map<String, Path> filePathCache;
+    private final Map<String, Path> filePathCache;
 
     public AssetsManager() {
         instance = this;
+        this.filePathCache = new HashMap<>();
     }
 
     public void setMain(Main main) {
         if (this.main == null) this.main = main;
         else throw new RuntimeException("Reassignment of main");
-        this.init();
+        this.mainOnlyInit();
         System.out.println("Assigned main!");
     }
 
-    private void init() {
+    private void mainOnlyInit() {
         this.assetsDir = this.main.assetsDir;
-        this.filePathCache = new HashMap<>();
     }
 
     public Image getImageFromFilePathString(String path) {

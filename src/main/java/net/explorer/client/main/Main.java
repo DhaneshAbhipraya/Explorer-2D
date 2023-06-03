@@ -4,8 +4,9 @@ import net.explorer.Constants;
 import net.explorer.client.assets.AssetsManager;
 import net.explorer.client.renderer.Camera;
 import net.explorer.client.renderer.WorldRenderer;
-import net.explorer.entity.Box;
-import net.explorer.entity.*;
+import net.explorer.entity.Entity;
+import net.explorer.entity.LivingEntity;
+import net.explorer.entity.Player;
 import net.explorer.event.Events;
 import net.explorer.event.TickEvent;
 import net.explorer.server.main.Server;
@@ -23,6 +24,7 @@ public class Main extends JPanel implements KeyListener {
     public static final int width = 800; // Width of the game screen
     public static final int height = 600; // Height of the game screen
     private final Entity player;
+    public static final Object lock = new Object();
     //    private ArrayList<Entity> entities = new ArrayList<>();
     private double moveX;
     private double moveY;
@@ -31,6 +33,7 @@ public class Main extends JPanel implements KeyListener {
     private static Main instance;
     private final Camera camera;
     private final WorldRenderer worldRenderer;
+    public static boolean ready = false;
 
     public static Main getInstance() {
         return instance;
@@ -81,11 +84,14 @@ public class Main extends JPanel implements KeyListener {
         this.player = new Player();
         if (player instanceof LivingEntity livingEntity) livingEntity.setAIEnabled(false);
         Server.getInstance().world.spawnEntity(this.player);
-        for (int i = 0; i < 10; i++) Server.getInstance().world.spawnEntity(new Box());
-        for (int i = 0; i < 10; i++) Server.getInstance().world.spawnEntity(new Cat());
+        synchronized (lock) {
+            ready = true;
+            lock.notifyAll();
+        }
     }
 
     public static void main(String[] args) throws InterruptedException {
+        new AssetsManager();
         Runnable runnable = () -> {
             try {
                 Server.main(args);
@@ -94,7 +100,6 @@ public class Main extends JPanel implements KeyListener {
             }
         };
         new Thread(runnable).start();
-        new AssetsManager();
 //        TickEventTest.main(args);
         Main game = new Main(args[0]);
         JFrame frame = new JFrame("Explorer 2D " + Constants.version);

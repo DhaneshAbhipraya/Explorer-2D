@@ -1,5 +1,8 @@
 package net.explorer.server.main;
 
+import net.explorer.entity.Box;
+import net.explorer.entity.Cat;
+import net.explorer.entity.Sheep;
 import net.explorer.event.Events;
 import net.explorer.server.GameLogic;
 import net.explorer.world.World;
@@ -14,6 +17,9 @@ public class Server {
     private Server() throws InterruptedException {
         instance = this;
         world = new World();
+        for (int i = 0; i < 10; i++) Server.getInstance().world.spawnEntity(new Box());
+        for (int i = 0; i < 10; i++) Server.getInstance().world.spawnEntity(new Cat());
+        for (int i = 0; i < 10; i++) Server.getInstance().world.spawnEntity(new Sheep());
         gameLogic = new GameLogic();
         while (true) {
             gameLogic.tick();
