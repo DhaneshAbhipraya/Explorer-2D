@@ -2,7 +2,7 @@ package net.explorer.entity;
 
 import net.explorer.Constants;
 import net.explorer.client.assets.AssetsManager;
-import net.explorer.client.main.Main;
+import net.explorer.client.main.Explorer;
 import net.explorer.client.renderer.Camera;
 import net.explorer.entity.util.AABB;
 import net.explorer.event.TickEvent;
@@ -24,7 +24,7 @@ import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
 import static net.explorer.Constants.tps;
-import static net.explorer.client.main.Main.lock;
+import static net.explorer.client.main.Explorer.lock;
 
 public abstract class Entity {
     protected AABB AABB = new AABB(this, 0, 0, 0, 0);
@@ -194,7 +194,7 @@ public abstract class Entity {
 
     protected void useAssetDraw() {
         CompletableFuture.runAsync(() -> {
-            while (!Main.ready) {
+            while (!Explorer.ready) {
                 try {
                     Thread.sleep(1000L / tps);
                 } catch (InterruptedException e) {
@@ -211,19 +211,19 @@ public abstract class Entity {
 
             File assetImagePNG = Path.of(assetImagePathString + ".png").toFile();
             System.out.println("Searching " + assetImagePNG);
-            if (Path.of(Main.getInstance().assetsDir + "\\" + assetImagePNG).toFile().exists()) {
+            if (Path.of(Explorer.getInstance().assetsDir + "\\" + assetImagePNG).toFile().exists()) {
                 System.out.println("Image path found " + assetImagePNG);
                 this.assetImageFile = assetImagePNG;
             } else {
                 File assetImageJPG = Path.of(assetImagePathString + ".jpg").toFile();
                 System.out.println("Searching " + assetImageJPG);
-                if (Path.of(Main.getInstance().assetsDir + "\\" + assetImageJPG).toFile().exists()) {
+                if (Path.of(Explorer.getInstance().assetsDir + "\\" + assetImageJPG).toFile().exists()) {
                     System.out.println("Image path found " + assetImageJPG);
                     this.assetImageFile = assetImageJPG;
                 } else {
                     File assetImageJPEG = Path.of(assetImagePathString + ".jpeg").toFile();
                     System.out.println("Searching " + assetImageJPEG);
-                    if (Path.of(Main.getInstance().assetsDir + "\\" + assetImageJPEG).toFile().exists()) {
+                    if (Path.of(Explorer.getInstance().assetsDir + "\\" + assetImageJPEG).toFile().exists()) {
                         System.out.println("Image path found " + assetImageJPEG);
                         this.assetImageFile = assetImageJPEG;
                     } else {
@@ -239,7 +239,7 @@ public abstract class Entity {
 
     public void assetDraw(Graphics2D g2d) {
         synchronized (lock) {
-            while (!Main.ready) {
+            while (!Explorer.ready) {
                 try {
                     lock.wait();
                 } catch (InterruptedException e) {
@@ -249,7 +249,7 @@ public abstract class Entity {
             if (this.assetImageFile == null) {
                 this.assetImageFile = Path.of("/fallback.png").toFile();
                 System.out.println("Asset image does not exist!");
-                if (!Path.of(Main.getInstance().assetsDir + "\\" + this.assetImageFile.toString()).toFile().exists()) {
+                if (!Path.of(Explorer.getInstance().assetsDir + "\\" + this.assetImageFile.toString()).toFile().exists()) {
                     System.out.println("Fallback image does not exist! Creating...");
                     BufferedImage image = new BufferedImage(2, 2, BufferedImage.TYPE_INT_RGB);
 
@@ -259,7 +259,7 @@ public abstract class Entity {
                     image.setRGB(1, 1, Color.BLACK.getRGB());
 
                     try {
-                        ImageIO.write(image, "png", Path.of(Main.getInstance().assetsDir + "\\" + this.assetImageFile.toString()).toFile());
+                        ImageIO.write(image, "png", Path.of(Explorer.getInstance().assetsDir + "\\" + this.assetImageFile.toString()).toFile());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

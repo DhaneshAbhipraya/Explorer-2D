@@ -1,13 +1,13 @@
 package net.explorer;
 
-import net.explorer.client.main.Main;
+import net.explorer.client.main.Explorer;
 import net.explorer.version.MMPQVersion;
 
 public class Constants {
     public static final boolean GRAVITY_ENABLED = false;
     public static final long tps = 20;
     public static MMPQVersion version;
-    private Main main;
+    private Explorer explorer;
 
 //    private static String getVersionFromPropertiesFile() {
 //        try {
@@ -21,8 +21,8 @@ public class Constants {
 //        return "";
 //    }
 
-    public void register(Main main) {
-        this.main = main;
+    public void register(Explorer explorer) {
+        this.explorer = explorer;
         version = MMPQVersion.parse("0.1.0-beta");
     }
 }

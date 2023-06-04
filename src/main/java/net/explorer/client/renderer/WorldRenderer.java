@@ -1,6 +1,6 @@
 package net.explorer.client.renderer;
 
-import net.explorer.client.main.Main;
+import net.explorer.client.main.Explorer;
 import net.explorer.entity.Player;
 import net.explorer.world.World;
 
@@ -18,7 +18,7 @@ public class WorldRenderer {
     public void render(Graphics2D g2d, Camera camera) {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        g2d.translate(-camera.getX() + Main.width / 2, -camera.getY() + Main.height / 2);
+        g2d.translate(-camera.getX() + Explorer.width / 2, -camera.getY() + Explorer.height / 2);
         for (int i = 0; i < this.world.getEntities().size(); i++) {
             this.world.getEntities().get(i).draw(g2d, camera);
             this.world.getEntities().get(i).drawCollisionBox(g2d, camera);

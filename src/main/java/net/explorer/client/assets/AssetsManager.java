@@ -1,6 +1,6 @@
 package net.explorer.client.assets;
 
-import net.explorer.client.main.Main;
+import net.explorer.client.main.Explorer;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class AssetsManager {
     private static AssetsManager instance;
-    private Main main;
+    private Explorer explorer;
     private Path assetsDir;
     private final Map<String, Path> filePathCache;
 
@@ -20,15 +20,15 @@ public class AssetsManager {
         this.filePathCache = new HashMap<>();
     }
 
-    public void setMain(Main main) {
-        if (this.main == null) this.main = main;
+    public void setMain(Explorer explorer) {
+        if (this.explorer == null) this.explorer = explorer;
         else throw new RuntimeException("Reassignment of main");
         this.mainOnlyInit();
         System.out.println("Assigned main!");
     }
 
     private void mainOnlyInit() {
-        this.assetsDir = this.main.assetsDir;
+        this.assetsDir = this.explorer.assetsDir;
     }
 
     public Image getImageFromFilePathString(String path) {
