@@ -40,6 +40,7 @@ public abstract class Entity {
     public List<TickEvent.TickListener> listeners = new ArrayList<>();
     private File assetImageFile;
     private double angle;
+    protected double eyeHeight;
 
     public void init() {
     }
@@ -54,6 +55,7 @@ public abstract class Entity {
         this.yVel = 0;
         this.xAcc = 0;
         this.yAcc = 0;
+        this.eyeHeight = 0.8;
         this.setAngle(0);
         this.tickInitiator = new TickEvent.TickInitiator();
         this.init();
@@ -65,13 +67,20 @@ public abstract class Entity {
 
     public void drawCollisionBox(Graphics2D g2d, Camera camera) {
 //        g2d.translate(camera.getX()+Main.width/2, camera.getY()+Main.height/2);
-        g2d.setColor(Color.BLUE);
         Rectangle2D box = new Rectangle2D.Double(this.AABB.getX1Absolute(), this.AABB.getY1Absolute(), this.AABB.getX2Relative(), this.AABB.getY2Relative());
         Ellipse2D origin = new Ellipse2D.Double(x - 3, y - 3, 6, 6);
         Line2D angle = new Line2D.Double(this.getX(), this.getY(), Math.cos(this.angle) * 100 + this.getX(), Math.sin(this.angle) * 100 + this.getY());
-        g2d.draw(angle);
+        Line2D eyeHeight1 = new Line2D.Double(this.getCollisionBox().getX1Absolute(), this.getCollisionBox().getY1Absolute() + getCollisionBox().getY2Relative(), this.getCollisionBox().getX2Absolute(), this.getCollisionBox().getY2Absolute());
+        g2d.setColor(Color.BLUE);
         g2d.draw(box);
         g2d.fill(origin);
+        g2d.translate(0, -this.eyeHeight * this.getCollisionBox().getY2Relative());
+        g2d.draw(angle);
+        g2d.translate(0, this.eyeHeight * this.getCollisionBox().getY2Relative());
+        g2d.setColor(Color.RED);
+        g2d.translate(0, -this.eyeHeight * this.getCollisionBox().getY2Relative());
+        g2d.draw(eyeHeight1);
+        g2d.translate(0, this.eyeHeight * this.getCollisionBox().getY2Relative());
     }
 
     public void handleCollisions(Entity other) {
@@ -316,5 +325,13 @@ public abstract class Entity {
 
     public void setyAcc(double yAcc) {
         this.yAcc = yAcc;
+    }
+
+    public double getEyeHeight() {
+        return eyeHeight;
+    }
+
+    public void setEyeHeight(double eyeHeight) {
+        this.eyeHeight = eyeHeight;
     }
 }

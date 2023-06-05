@@ -24,6 +24,16 @@ public class Camera {
 
     public void setPositionFromEntity(Entity entity) {
         setX(entity.getX());
-        setY(entity.getY());
+        setY(entity.getY() - entity.getEyeHeight() * entity.getCollisionBox().getY2Relative());
+    }
+
+    public void setPositionFromEntitySmooth(Entity entity) {
+        double t = 0.25;
+        setX(lerp(x, entity.getX(), t));
+        setY(lerp(y, entity.getY() - entity.getEyeHeight() * entity.getCollisionBox().getY2Relative(), t));
+    }
+
+    private double lerp(double start, double end, double t) {
+        return start + t * (end - start);
     }
 }

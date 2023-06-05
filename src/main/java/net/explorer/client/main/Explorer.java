@@ -16,6 +16,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -44,6 +46,17 @@ public class Explorer extends JPanel implements KeyListener {
         File file = Path.of(runDir, "runDirRoot").toFile();
         Path path = Path.of(runDir);
         this.runDir = path;
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                int x = e.getX();
+                int y = e.getY();
+
+                Point point = worldRenderer.convertScreenToWorld(new Point(x, y));
+                Entity entity = Server.getInstance().world.pointCollidingEntity(point);
+                if (entity != null) swapEntity(entity);
+            }
+        });
         if (!file.exists()) {
             try {
                 Files.createDirectories(path);
@@ -96,7 +109,7 @@ public class Explorer extends JPanel implements KeyListener {
     public void tick() {
         if (player instanceof LivingEntity livingEntity) livingEntity.setAIEnabled(false);
         this.player.move(this.moveX, this.moveY);
-        this.camera.setPositionFromEntity(player);
+        this.camera.setPositionFromEntitySmooth(player);
     }
 
     public void paintComponent(Graphics g) {
@@ -120,11 +133,11 @@ public class Explorer extends JPanel implements KeyListener {
             case KeyEvent.VK_RIGHT -> movePlayer(10, 0);
             case KeyEvent.VK_UP -> movePlayer(0, -10);
             case KeyEvent.VK_DOWN -> movePlayer(0, 10);
-            case KeyEvent.VK_X -> showXDialog();
+            case KeyEvent.VK_X -> swapEntity(player);
         }
     }
 
-    private void showXDialog() {
+    private void swapEntity(Entity entity1) {
         String[] optionsArray = Listers.getListerFromName("entity").getKeys().toArray(new String[0]);
         String selected = (String) JOptionPane.showInputDialog(
                 null,
@@ -137,13 +150,13 @@ public class Explorer extends JPanel implements KeyListener {
         );
 
         if (selected != null) {
-            double playerX = player.getX();
-            double playerY = player.getY();
-            double playerXVel = player.getXVel();
-            double playerYVel = player.getYVel();
-            double playerXAcc = player.getXAcc();
-            double playerYAcc = player.getYAcc();
-            double playerAngle = player.getAngle();
+            double playerX = entity1.getX();
+            double playerY = entity1.getY();
+            double playerXVel = entity1.getXVel();
+            double playerYVel = entity1.getYVel();
+            double playerXAcc = entity1.getXAcc();
+            double playerYAcc = entity1.getYAcc();
+            double playerAngle = entity1.getAngle();
             Entity entity;
             try {
                 entity = ((Class<? extends Entity>) Listers.getListerFromName("entity").fromKey(selected)).getDeclaredConstructor().newInstance();
@@ -158,9 +171,11 @@ public class Explorer extends JPanel implements KeyListener {
             entity.setxAcc(playerXAcc);
             entity.setyAcc(playerYAcc);
             entity.setAngle(playerAngle);
-            Server.getInstance().world.removeEntity(player);
+            if (entity instanceof LivingEntity livingEntity) livingEntity.setAIEnabled(false);
+            Server.getInstance().world.removeEntity(entity1);
             Server.getInstance().world.spawnEntity(entity);
-            setPlayer(entity);
+            if (entity1 == player)
+                setPlayer(entity);
         }
     }
 

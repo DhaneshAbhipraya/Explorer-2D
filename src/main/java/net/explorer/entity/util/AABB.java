@@ -2,6 +2,8 @@ package net.explorer.entity.util;
 
 import net.explorer.entity.Entity;
 
+import java.awt.*;
+
 public class AABB {
     private final double x1;
     private final double y1;
@@ -58,5 +60,9 @@ public class AABB {
 
     public boolean isCollidingAABB(AABB other) {
         return !(this.getX1Absolute() >= other.getX2Absolute() || this.getX2Absolute() <= other.getX1Absolute() || this.getY1Absolute() >= other.getY2Absolute() || this.getY2Absolute() <= other.getY1Absolute());
+    }
+
+    public boolean isCollidingPoint(Point point) {
+        return this.getX1Absolute() < point.x && this.getX2Absolute() > point.x && this.getY1Absolute() < point.y && this.getY2Absolute() > point.y;
     }
 }
