@@ -102,7 +102,7 @@ public class Explorer extends JPanel implements KeyListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
-        worldRenderer.render(g2d, camera);
+        worldRenderer.render(g2d, camera, false);
 
         repaint();
     }
