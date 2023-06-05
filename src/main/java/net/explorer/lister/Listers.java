@@ -10,4 +10,8 @@ public class Listers {
     static {
         listers.put("entity", EntityLister::new);
     }
+
+    public static Lister<?> getListerFromName(String name) {
+        return listers.get(name).apply(0);
+    }
 }

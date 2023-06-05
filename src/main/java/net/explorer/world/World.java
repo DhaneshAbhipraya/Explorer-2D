@@ -16,6 +16,10 @@ public class World {
         this.entities.add(entity);
     }
 
+    public void removeEntity(Entity entity) {
+        this.entities.remove(entity);
+    }
+
     public void tick() {
         for (int i = 0; i < this.entities.size(); i++) {
             this.entities.get(i).tick();

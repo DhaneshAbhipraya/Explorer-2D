@@ -4,9 +4,9 @@ import net.explorer.entity.*;
 
 public class EntityLister extends Lister<Class<? extends Entity>> {
     public EntityLister(Integer index) {
-        list.add(Box.class);
-        list.add(Cat.class);
-        list.add(Player.class);
-        list.add(Sheep.class);
+        map.put("Box", Box.class);
+        map.put("Cat", Cat.class);
+        map.put("Player", Player.class);
+        map.put("Sheep", Sheep.class);
     }
 }

@@ -293,4 +293,28 @@ public abstract class Entity {
     public void setAngle(double angle) {
         this.angle = angle;
     }
+
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    public void setY(double y) {
+        this.y = y;
+    }
+
+    public void setxVel(double xVel) {
+        this.xVel = xVel;
+    }
+
+    public void setyVel(double yVel) {
+        this.yVel = yVel;
+    }
+
+    public void setxAcc(double xAcc) {
+        this.xAcc = xAcc;
+    }
+
+    public void setyAcc(double yAcc) {
+        this.yAcc = yAcc;
+    }
 }

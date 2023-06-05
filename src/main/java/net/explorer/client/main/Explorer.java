@@ -9,6 +9,7 @@ import net.explorer.entity.LivingEntity;
 import net.explorer.entity.Player;
 import net.explorer.event.Events;
 import net.explorer.event.TickEvent;
+import net.explorer.lister.Listers;
 import net.explorer.server.main.Server;
 
 import javax.swing.*;
@@ -17,6 +18,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -118,6 +120,47 @@ public class Explorer extends JPanel implements KeyListener {
             case KeyEvent.VK_RIGHT -> movePlayer(10, 0);
             case KeyEvent.VK_UP -> movePlayer(0, -10);
             case KeyEvent.VK_DOWN -> movePlayer(0, 10);
+            case KeyEvent.VK_X -> showXDialog();
+        }
+    }
+
+    private void showXDialog() {
+        String[] optionsArray = Listers.getListerFromName("entity").getKeys().toArray(new String[0]);
+        String selected = (String) JOptionPane.showInputDialog(
+                null,
+                "Select an option:",
+                "Selection Dialog",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                optionsArray,
+                optionsArray[0]
+        );
+
+        if (selected != null) {
+            double playerX = player.getX();
+            double playerY = player.getY();
+            double playerXVel = player.getXVel();
+            double playerYVel = player.getYVel();
+            double playerXAcc = player.getXAcc();
+            double playerYAcc = player.getYAcc();
+            double playerAngle = player.getAngle();
+            Entity entity;
+            try {
+                entity = ((Class<? extends Entity>) Listers.getListerFromName("entity").fromKey(selected)).getDeclaredConstructor().newInstance();
+            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
+                     InvocationTargetException e) {
+                throw new RuntimeException(e);
+            }
+            entity.setX(playerX);
+            entity.setY(playerY);
+            entity.setxVel(playerXVel);
+            entity.setyVel(playerYVel);
+            entity.setxAcc(playerXAcc);
+            entity.setyAcc(playerYAcc);
+            entity.setAngle(playerAngle);
+            Server.getInstance().world.removeEntity(player);
+            Server.getInstance().world.spawnEntity(entity);
+            setPlayer(entity);
         }
     }
 
