@@ -1,0 +1,19 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="SSBasedInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <searchConfiguration name="Comments containing a given word" text="// $before$ bug $after$" recursive="true" caseInsensitive="true" type="Kotlin" pattern_context="default">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="before" within="" contains="" />
+        <constraint name="after" within="" contains="" />
+      </searchConfiguration>
+      <searchConfiguration name="Unnamed" text="class $Class$ {  &#10;    var $Field$ = $Init$&#10;}" recursive="true" caseInsensitive="true" type="Kotlin" pattern_context="default">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="Class" within="" contains="" />
+        <constraint name="Field" maxCount="2147483647" target="true" within="" contains="" />
+        <constraint name="Init" minCount="0" within="" contains="" />
+      </searchConfiguration>
+    </inspection_tool>
+    <inspection_tool class="db4b32bb-b2a1-36a8-a896-0d91c20dad28" enabled="true" level="WARNING" enabled_by_default="true" />
+  </profile>
+</component>

@@ -71,7 +71,7 @@ public class Explorer extends JPanel implements KeyListener {
         setFocusable(true);
         Events.getInstance().tickInitiator.addListener(new TickEvent.TickListener() {
             @Override
-            public void onStartTick() {
+            public void onEndTick() {
                 tick();
             }
         });
