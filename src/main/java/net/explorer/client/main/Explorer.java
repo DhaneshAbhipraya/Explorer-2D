@@ -28,7 +28,7 @@ public class Explorer extends JPanel implements KeyListener {
     private static Explorer instance;
     public final Path runDir;
     public final Path assetsDir;
-    private final Entity player;
+    private Entity player;
     private final Camera camera;
     private final WorldRenderer worldRenderer;
     //    private ArrayList<Entity> entities = new ArrayList<>();
@@ -50,6 +50,7 @@ public class Explorer extends JPanel implements KeyListener {
             }
             System.out.println("Running Directory File does not exist!");
             try {
+                //noinspection ResultOfMethodCallIgnored
                 file.createNewFile();
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -77,9 +78,9 @@ public class Explorer extends JPanel implements KeyListener {
         });
         this.camera = new Camera();
         this.worldRenderer = new WorldRenderer(Server.getInstance().world, camera);
-        this.player = new Player();
-        if (player instanceof LivingEntity livingEntity) livingEntity.setAIEnabled(false);
-        Server.getInstance().world.spawnEntity(this.player);
+        Entity player1 = new Player();
+        Server.getInstance().world.spawnEntity(player1);
+        this.setPlayer(player1);
         synchronized (lock) {
             ready = true;
             lock.notifyAll();
@@ -91,6 +92,7 @@ public class Explorer extends JPanel implements KeyListener {
     }
 
     public void tick() {
+        if (player instanceof LivingEntity livingEntity) livingEntity.setAIEnabled(false);
         this.player.move(this.moveX, this.moveY);
         this.camera.setPositionFromEntity(player);
     }
@@ -116,6 +118,12 @@ public class Explorer extends JPanel implements KeyListener {
             case KeyEvent.VK_RIGHT -> movePlayer(10, 0);
             case KeyEvent.VK_UP -> movePlayer(0, -10);
             case KeyEvent.VK_DOWN -> movePlayer(0, 10);
+        }
+    }
+
+    public void setPlayer(Entity player) {
+        if (player.world == Server.getInstance().world) {
+            this.player = player;
         }
     }
 

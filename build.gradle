@@ -17,11 +17,3 @@ dependencies {
 test {
     useJUnitPlatform()
 }
-
-tasks.register('writeVersionProperties') {
-    def versionPropertiesFile = file('version.properties')
-
-    doLast {
-        versionPropertiesFile.text = "version=${project.version}"
-    }
-}

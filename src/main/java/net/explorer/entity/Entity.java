@@ -6,6 +6,7 @@ import net.explorer.client.main.Explorer;
 import net.explorer.client.renderer.Camera;
 import net.explorer.entity.util.AABB;
 import net.explorer.event.TickEvent;
+import net.explorer.world.World;
 
 import javax.imageio.IIOException;
 import javax.imageio.ImageIO;
@@ -27,6 +28,7 @@ import static net.explorer.Constants.tps;
 import static net.explorer.client.main.Explorer.lock;
 
 public abstract class Entity {
+    public World world = null;
     protected AABB AABB = new AABB(this, 0, 0, 0, 0);
     private double x;
     private double y;

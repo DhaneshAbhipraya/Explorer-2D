@@ -12,15 +12,16 @@ public class World {
     }
 
     public void spawnEntity(Entity entity) {
+        entity.world = this;
         this.entities.add(entity);
     }
 
     public void tick() {
         for (int i = 0; i < this.entities.size(); i++) {
             this.entities.get(i).tick();
-            for (int j = 0; j < this.entities.size(); j++) {
-                if (this.entities.get(j) != this.entities.get(i)) {
-                    this.entities.get(i).handleCollisions(this.entities.get(j));
+            for (Entity entity : this.entities) {
+                if (entity != this.entities.get(i)) {
+                    this.entities.get(i).handleCollisions(entity);
                 }
             }
         }
