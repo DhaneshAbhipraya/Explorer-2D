@@ -31,7 +31,7 @@ public class WorldRenderer {
         transform.concatenate(AffineTransform.getTranslateInstance(-camera.getX() + Explorer.width / 2, -camera.getY() + Explorer.height / 2));
         for (int i = 0; i < this.world.getEntities().size(); i++) {
             this.world.getEntities().get(i).draw(g2d, camera);
-            if (drawCollisionBox) this.world.getEntities().get(i).drawCollisionBox(g2d, camera);
+            if (drawCollisionBox) this.world.getEntities().get(i).drawCollisionBox(g2d);
             if (this.world.getEntities().get(i) instanceof Player player) {
                 // player name
                 g2d.setFont(new Font("", Font.PLAIN, 25));
