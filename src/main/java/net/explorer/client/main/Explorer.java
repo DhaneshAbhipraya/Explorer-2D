@@ -1,6 +1,7 @@
 package net.explorer.client.main;
 
 import net.explorer.Constants;
+import net.explorer.ai.AI;
 import net.explorer.client.assets.AssetsManager;
 import net.explorer.client.renderer.Camera;
 import net.explorer.client.renderer.WorldRenderer;
@@ -157,8 +158,13 @@ public class Explorer extends JPanel implements KeyListener {
             double playerXAcc = entity1.getXAcc();
             double playerYAcc = entity1.getYAcc();
             double playerAngle = entity1.getAngle();
+            AI playerAi = null;
+            if (entity1 instanceof LivingEntity livingEntity) {
+                playerAi = livingEntity.getAi();
+            }
             Entity entity;
             try {
+                //noinspection unchecked
                 entity = ((Class<? extends Entity>) Listers.getListerFromName("entity").fromKey(selected)).getDeclaredConstructor().newInstance();
             } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
                      InvocationTargetException e) {
@@ -171,7 +177,8 @@ public class Explorer extends JPanel implements KeyListener {
             entity.setxAcc(playerXAcc);
             entity.setyAcc(playerYAcc);
             entity.setAngle(playerAngle);
-            if (entity instanceof LivingEntity livingEntity) livingEntity.setAIEnabled(false);
+            if (entity instanceof LivingEntity livingEntity)
+                livingEntity.setAi(playerAi);
             Server.getInstance().world.removeEntity(entity1);
             Server.getInstance().world.spawnEntity(entity);
             if (entity1 == player)

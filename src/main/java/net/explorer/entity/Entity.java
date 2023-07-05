@@ -65,7 +65,7 @@ public abstract class Entity {
     public void draw(Graphics2D g2d, Camera camera) {
     }
 
-    public void drawCollisionBox(Graphics2D g2d, Camera camera) {
+    public void drawCollisionBox(Graphics2D g2d) {
 //        g2d.translate(camera.getX()+Main.width/2, camera.getY()+Main.height/2);
         Rectangle2D box = new Rectangle2D.Double(this.AABB.getX1Absolute(), this.AABB.getY1Absolute(), this.AABB.getX2Relative(), this.AABB.getY2Relative());
         Ellipse2D origin = new Ellipse2D.Double(x - 3, y - 3, 6, 6);
@@ -187,7 +187,7 @@ public abstract class Entity {
     }
 
     public void move(double dx, double dy) {
-        int maxMove = 50;
+        int maxMove = 5;
         if (this.canMove()) {
 //            this.x += dx;
 //            this.y += dy;

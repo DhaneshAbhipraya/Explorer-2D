@@ -8,6 +8,7 @@ import net.explorer.entity.util.attributes.Attributes;
 import net.explorer.event.TickEvent;
 
 import java.awt.*;
+import java.util.List;
 
 public abstract class LivingEntity extends Entity {
     private double health;
@@ -20,25 +21,16 @@ public abstract class LivingEntity extends Entity {
     }
 
     public void setAIEnabled(boolean enabled) {
-        this.ai.setEnabled(enabled);
+        if (this.ai != null)
+            this.ai.setEnabled(enabled);
     }
 
-    private class tl1 implements TickEvent.TickListener {
+    public AI getAi() {
+        return ai;
+    }
 
-        private final AI ai;
-
-        public tl1(AI ai) {
-            this.ai = ai;
-        }
-
-        @Override
-        public void onStartTick() {
-            this.ai.tick();
-        }
-
-        @Override
-        public void onEndTick() {
-        }
+    public void setAi(AI ai) {
+        this.ai = ai;
     }
 
     @Override
@@ -65,5 +57,33 @@ public abstract class LivingEntity extends Entity {
 
     public AttributeList getAttributes() {
         return this.attributes;
+    }
+
+    public void clearAiQueue() {
+        this.ai.taskQueue.clear();
+    }
+
+    public void addToAiQueue(AI.Task task) {
+        this.ai.taskQueue.add(task);
+    }
+
+    public List<AI.Task> getAiQueue() {
+        return this.ai.taskQueue;
+    }
+
+    public void setAiQueue(List<AI.Task> aiQueue) {
+        this.ai.taskQueue = aiQueue.stream().toList();
+    }
+
+    private record tl1(AI ai) implements TickEvent.TickListener {
+
+        @Override
+        public void onStartTick() {
+            this.ai.tick();
+        }
+
+        @Override
+        public void onEndTick() {
+        }
     }
 }

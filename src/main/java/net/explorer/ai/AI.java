@@ -28,6 +28,6 @@ public class AI {
         }
     }
 
-    public final List<Task> taskQueue = new ArrayList<>();
+    public List<Task> taskQueue = new ArrayList<>();
 
 }
